@@ -1,0 +1,989 @@
+{
+  "module_id": "history_taking_checklist",
+  "title_ar": "قائمة مراجعة التاريخ المرضي الشامل (History Taking Checklist)",
+  "title_en": "Comprehensive History Taking Checklist",
+  "version": "1.0.0",
+  "sections": [
+    {
+      "section_id": "introduction_and_consent",
+      "section_title_ar": "1. التقديم والاستئذان (Introduction & Consent)",
+      "items": [
+        {
+          "id": "intro_self",
+          "type": "checkbox",
+          "symbol": "-Ø´",
+          "label_ar": "التعريف بالنفس، وشرح إجراء أخذ التاريخ المرضي للمريض",
+          "label_en": "Introduce yourself and explain the purpose of taking history"
+        },
+        {
+          "id": "patient_name",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "اسم المريض الرباعي",
+          "placeholder_ar": "ادخل اسم المريض..."
+        },
+        {
+          "id": "patient_age",
+          "type": "number_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "عمر المريض (بالسنوات)",
+          "placeholder_ar": "ادخل العمر..."
+        },
+        {
+          "id": "history_type",
+          "type": "history_type_selector",
+          "symbol": "-ش",
+          "label_ar": "نوع التاريخ المرضي (History Type) — حدد النوع لإظهار الأقسام الإضافية المناسبة",
+          "options": [
+            { "value": "general", "label_ar": "🧑 عادي / بالغين (General Adult History)" },
+            { "value": "pediatric", "label_ar": "🧒 أطفال (Pediatric History)" },
+            { "value": "gynecological", "label_ar": "🤰 نسائية (Gynecological History)" }
+          ]
+        },
+        {
+          "id": "hygiene_privacy_chaperone",
+          "type": "checkbox",
+          "symbol": "-Ø´",
+          "label_ar": "تعقيم اليدين (Hand Hygiene) + ضمان الخصوصية (Privacy) + إحضار مرافق/مرافقة (Chaperone)",
+          "label_en": "Hand hygiene, Privacy, and Chaperone"
+        },
+        {
+          "id": "patient_consent",
+          "type": "checkbox",
+          "symbol": "-Ø´",
+          "label_ar": "أخذ الموافقة الصريحة من المريض (Informed Consent)",
+          "label_en": "Obtain patient consent"
+        },
+        {
+          "id": "arrival_mode",
+          "type": "single_choice_with_conditional",
+          "symbol": "-Ø´",
+          "label_ar": "كيف جئت إلى المستشفى؟",
+          "options": [
+            {
+              "value": "ambulance",
+              "label_ar": "سيارة الإسعاف 🚑",
+              "has_extra_input": true,
+              "extra_input_type": "text_input",
+              "symbol": "-Ùƒ",
+              "extra_input_label_ar": "متى دخل المريض وبأي ساعة؟ (Time of Arrival)"
+            },
+            {
+              "value": "private_car",
+              "label_ar": "سيارة خاصة 🚗"
+            },
+            {
+              "value": "walking_other",
+              "label_ar": "مشياً / وسيلة أخرى 🚶‍♂️"
+            }
+          ]
+        },
+        {
+          "id": "residence_location",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "مكان السكن والتواجد الحالي",
+          "placeholder_ar": "أين تسكن؟ (المحافظة / المنطقة)..."
+        },
+        {
+          "id": "marital_status",
+          "type": "single_choice",
+          "symbol": "-Ø´",
+          "label_ar": "الحالة الاجتماعية",
+          "options": [
+            { "value": "single", "label_ar": "أعزب / عزباء" },
+            { "value": "married", "label_ar": "متزوج / متزوجة" },
+            { "value": "widowed_divorced", "label_ar": "أرمل / أرملة / مطلق" }
+          ]
+        },
+        {
+          "id": "occupation",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "المهنة وطبيعة العمل الحالية (Occupation)",
+          "placeholder_ar": "ما طبيعة عملك؟..."
+        }
+      ]
+    },
+    {
+      "section_id": "hopi_socrates",
+      "section_title_ar": "2. تفاصيل الشكوى الرئيسية (HOPI / SOCRATES Framework)",
+      "items": [
+        {
+          "id": "chief_complaint",
+          "type": "text_area_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "الشكوى الرئيسية (Chief Complaint)",
+          "placeholder_ar": "اكتب الشكوى الرئيسية بكلام المريض بالظبط (Patient's own words)..."
+        },
+        {
+          "id": "site_selection",
+          "type": "interactive_anatomy_map",
+          "symbol": "-Ø´ / -Ùƒ",
+          "label_ar": "موقع الألم / الشكوى (Site)",
+          "image_src": "site.png",
+          "instructions_ar": "يمكنك تحديد نقطة/نقاط (Spots) على رسمة الجسم، أو إضافة ملاحظة كتابية لموقع الشكوى.",
+          "enable_spot_selection": true,
+          "enable_multi_spot": true,
+          "allow_free_text": true,
+          "text_label_ar": "توصيف موقع الألم كتابةً (إن وجد):"
+        },
+        {
+          "id": "secondary_complaints",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "هل توجد أي مشكلة أو شكوى أخرى غير المكان المحدد؟",
+          "placeholder_ar": "اكتب الشكاوى الثانوية الأخرى إن وجدت..."
+        },
+        {
+          "id": "onset_type",
+          "type": "single_choice",
+          "symbol": "-Ø´",
+          "label_ar": "طبيعة بداية الألم (Onset)",
+          "options": [
+            { "value": "sudden", "label_ar": "مفاجئ حاد (Suddenly)" },
+            { "value": "gradual", "label_ar": "تدريجي (Gradually)" }
+          ]
+        },
+        {
+          "id": "onset_context_trigger",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "شو كان يعمل المريض لما بلش الوجع؟ (Context / Trigger)",
+          "placeholder_ar": "مثال: كان بياكل، عم يتمرن، عمل حركة مفاجئة..."
+        },
+        {
+          "id": "character_description",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "طبيعة ونوع الألم (Character)",
+          "placeholder_ar": "مثال: حاد/سكاكين (Sharp)، عاصر/ضغطة (Squeezing/Crushing)، حرقان (Burning)، مغص/متقطع (Colicky)..."
+        }
+      ]
+    },
+    {
+      "section_id": "associated_symptoms_detailed",
+      "section_title_ar": "3. الأعراض المصاحبة والتفاصيل السريرية (Associated Symptoms)",
+      "systems": [
+        {
+          "system_id": "gi_details",
+          "system_name_ar": "الجهاز الهضمي والتقيؤ (GI & Vomiting Details)",
+          "items": [
+            {
+              "id": "has_vomiting",
+              "type": "checkbox_with_subfields",
+              "symbol": "-Ø´",
+              "label_ar": "الاستفراغ (Vomiting) 🤮",
+              "subfields": [
+                {
+                  "id": "vomiting_frequency",
+                  "type": "text_input",
+                  "symbol": "-Ùƒ",
+                  "label_ar": "كم مرة استفرغت؟ (Frequency / Count)"
+                },
+                {
+                  "id": "vomiting_quantity",
+                  "type": "text_input",
+                  "symbol": "-Ùƒ",
+                  "label_ar": "كمية الاستفراغ (Quantity - كاسة، جاط، تجشؤ فقط)"
+                },
+                {
+                  "id": "vomiting_content_color",
+                  "type": "multiple_choice",
+                  "symbol": "-Ø´",
+                  "label_ar": "محتوى ولون الاستفراغ (Contents & Color)",
+                  "options": [
+                    { "value": "undigested_food", "label_ar": "طعام غير مهضوم" },
+                    { "value": "bile_green_yellow", "label_ar": "أصفر / أخضر (Bile / عصارة مرارية - دليل انسداد بعد الاثني عشر)" },
+                    { "value": "hematemesis_red", "label_ar": "أحمر قانٍ (Fresh Blood / Hematemesis - نزيف مريء أو معدة حاد)" },
+                    { "value": "coffee_ground", "label_ar": "أسود زي تفل القهوة (Coffee-ground - نزيف معدة قديم)" }
+                  ]
+                },
+                {
+                  "id": "is_projectile",
+                  "type": "checkbox",
+                  "symbol": "-Ø´",
+                  "label_ar": "استفراغ قذفي/مندفع بقوة (Projectile Vomiting - ارتفاع ضغط الدماغ ICP أو انسداد مخرج المعدة)"
+                },
+                {
+                  "id": "relieved_by_vomiting",
+                  "type": "single_choice",
+                  "symbol": "-Ø´",
+                  "label_ar": "هل الاستفراغ بريح الوجع؟ (Relieved by vomiting?)",
+                  "options": [
+                    { "value": "yes", "label_ar": "نعم بريح (مثل قرحة المعدة / انسداد الأمعاء)" },
+                    { "value": "no", "label_ar": "لا ما بريح (مثل التهاب المرارة / البنكرياس)" }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "has_stool_changes",
+              "type": "checkbox_with_subfields",
+              "symbol": "-Ø´",
+              "label_ar": "تغير الإخراج والبراز (Change in Stool / Bowel Habit) 💩",
+              "subfields": [
+                {
+                  "id": "stool_nature",
+                  "type": "text_input",
+                  "symbol": "-Ùƒ",
+                  "label_ar": "إسهال أم إمساك؟ وكم مرة باليوم؟"
+                },
+                {
+                  "id": "stool_color_type",
+                  "type": "multiple_choice",
+                  "symbol": "-Ø´",
+                  "label_ar": "لون البراز وطبيعته",
+                  "options": [
+                    { "value": "hematochezia", "label_ar": "أحمر فيه دم طازج (Hematochezia - بواسير / نزيف قولون سفلي)" },
+                    { "value": "melena", "label_ar": "أسود لزج وزي الزفت/الفحم وريحة كريهة جداً (Melena - نزيف علوي)" },
+                    { "value": "steatorrhea", "label_ar": "شاحب وزيتي بيلزق بالمرحاض (Steatorrhea - انسداد مراري / سوء امتصاص)" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "system_id": "respiratory_details",
+          "system_name_ar": "الجهاز التنفسي والكحة (Respiratory Details)",
+          "items": [
+            {
+              "id": "has_dyspnea",
+              "type": "checkbox_with_subfields",
+              "symbol": "-Ø´",
+              "label_ar": "ضيق النفس (Shortness of Breath / Dyspnea) 🫁",
+              "subfields": [
+                {
+                  "id": "dyspnea_timing",
+                  "type": "single_choice",
+                  "symbol": "-Ø´",
+                  "label_ar": "متى يحدث ضيق النفس؟",
+                  "options": [
+                    { "value": "on_exertion", "label_ar": "عند المجهود والمشي (On exertion)" },
+                    { "value": "at_rest", "label_ar": "أثناء الراحة والسكون (At rest)" }
+                  ]
+                },
+                {
+                  "id": "has_orthopnea",
+                  "type": "checkbox",
+                  "symbol": "-Ø´",
+                  "label_ar": "أرثوبنيا (Orthopnea): عدم القدرة على النوم فلات والمجبور لرفع الرأس بمخدات (علامة Left CHF)"
+                },
+                {
+                  "id": "has_pnd",
+                  "type": "checkbox",
+                  "symbol": "-Ø´",
+                  "label_ar": "ضيق نفس ليلي مفاجئ (PND): الاستيقاظ بليل خنقان والركض للشباك (فشل قلب مزمن)"
+                },
+                {
+                  "id": "has_wheezing",
+                  "type": "checkbox",
+                  "symbol": "-Ø´",
+                  "label_ar": "وجود صفير/تصفير بالصدر (Wheezing - أزمة ربو / COPD)"
+                }
+              ]
+            },
+            {
+              "id": "has_cough",
+              "type": "checkbox_with_subfields",
+              "symbol": "-Ø´",
+              "label_ar": "الكحة والبلغم (Cough & Sputum) 🗣️",
+              "subfields": [
+                {
+                  "id": "cough_type",
+                  "type": "single_choice",
+                  "symbol": "-Ø´",
+                  "label_ar": "طبيعة الكحة",
+                  "options": [
+                    { "value": "dry", "label_ar": "جافة (Dry)" },
+                    { "value": "productive", "label_ar": "معها بلغم (Productive)" }
+                  ]
+                },
+                {
+                  "id": "sputum_color",
+                  "type": "multiple_choice",
+                  "symbol": "-Ø´",
+                  "label_ar": "لون وخصائص البلغم",
+                  "options": [
+                    { "value": "yellow_green", "label_ar": "أصفر / أخضر (التهاب بكتيري / Pneumonia)" },
+                    { "value": "clear_white", "label_ar": "شفاف / أبيض (التهاب فيروسي أو حساسية)" },
+                    { "value": "pink_frothy", "label_ar": "وردي ورغوي (Pink Frothy - وذمة رئة حادة / Pulmonary Edema)" },
+                    { "value": "rusty", "label_ar": "صدئ (Rusty - Pneumococcal)" },
+                    { "value": "hemoptysis", "label_ar": "دم مع الكحة (Hemoptysis - سل TB / جلطة رئوية PE / سرطان رئة)" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "system_id": "fever_urinary_details",
+          "system_name_ar": "الحرارة والأعراض البولية (Fever & Urinary Details)",
+          "items": [
+            {
+              "id": "has_fever",
+              "type": "checkbox_with_subfields",
+              "symbol": "-Ø´",
+              "label_ar": "الحرارة والرجفة (Fever & Chills) 🌡️",
+              "subfields": [
+                {
+                  "id": "fever_measurement",
+                  "type": "text_input",
+                  "symbol": "-Ùƒ",
+                  "label_ar": "هل قستها بالميزان؟ وكم كانت القراءة؟"
+                },
+                {
+                  "id": "fever_pattern",
+                  "type": "checkbox",
+                  "symbol": "-Ø´",
+                  "label_ar": "تعلى بليل مع عرق غزير (Night Sweats - توجيه للسل TB أو Lymphoma)"
+                },
+                {
+                  "id": "has_chills_rigors",
+                  "type": "checkbox",
+                  "symbol": "-Ø´",
+                  "label_ar": "رجفة وخبطة أسنان (Chills & Rigors - إنتان دم Bacteremia أو Pyelonephritis)"
+                }
+              ]
+            },
+            {
+              "id": "has_urinary_symptoms",
+              "type": "checkbox_with_subfields",
+              "symbol": "-Ø´",
+              "label_ar": "الأعراض البولية (Urinary Symptoms) 🚽",
+              "subfields": [
+                {
+                  "id": "urine_color",
+                  "type": "text_input",
+                  "symbol": "-Ùƒ",
+                  "label_ar": "لون البول (أحمر دم Hematuria / غامق زي الشاي Cola-colored)"
+                },
+                {
+                  "id": "dysuria_timing",
+                  "type": "checkbox",
+                  "symbol": "-Ø´",
+                  "label_ar": "حرقان بالبول (Dysuria) في البداية أو النهاية"
+                },
+                {
+                  "id": "prostate_signs",
+                  "type": "checkbox",
+                  "symbol": "-Ø´",
+                  "label_ar": "صعوبة بدء التبول أو تقطيع (Hesitancy / Dribbling - بروستات)"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "radiation_and_modifying_factors",
+      "section_title_ar": "4. الإشعاع والعوامل المؤثرة (Radiation, Aggravating & Alleviating)",
+      "items": [
+        {
+          "id": "radiation_description",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "انتشار وإشعاع الألم (Radiation)",
+          "placeholder_ar": "إلى أين ينتشر الألم؟ (مثل: للكتف الأيسر، الفك، الظهر)..."
+        },
+        {
+          "id": "aggravating_factors",
+          "type": "multiple_choice",
+          "symbol": "-Ø´",
+          "label_ar": "🔴 العوامل التي تزيد الألم (Aggravating Factors Checklist)",
+          "options": [
+            { "value": "movement_exertion", "label_ar": "الحركة والجهد البدني (المشي، صعود الدرج)" },
+            { "value": "breathing_coughing", "label_ar": "التنفس والكحة (أخذ نفس عميق، العطس)" },
+            { "value": "body_position", "label_ar": "وضعية الجسم (الاستلقاء فلات، الانحناء)" },
+            { "value": "eating_drinking", "label_ar": "الأكل والشرب (الأكل الدسم، الحامض)" },
+            { "value": "touch_pressure", "label_ar": "الضغط واللمس (اللمس الخفيف، اهتزاز السيارة)" },
+            { "value": "weather_stress", "label_ar": "العوامل الجوية والنفسية (البرد، التوتر)" }
+          ]
+        },
+        {
+          "id": "aggravating_factors_other",
+          "type": "text_area_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "تفاصيل حرة إضافية عن العوامل المزيدة للألم",
+          "placeholder_ar": "أي تفاصيل ما بتغطيها الخيارات فوق..."
+        },
+        {
+          "id": "alleviating_factors",
+          "type": "multiple_choice",
+          "symbol": "-Ø´",
+          "label_ar": "🟢 العوامل التي تخفف الألم (Alleviating Factors Checklist)",
+          "options": [
+            { "value": "posture_rest", "label_ar": "وضعية الجسم (الانحناء للأمام، ضم الركبتين، السكون)" },
+            { "value": "eating_vomiting", "label_ar": "الأكل أو الاستفراغ والتقيؤ" },
+            { "value": "bowel_gas_release", "label_ar": "الإخراج (التبرز أو إخراج الغازات)" },
+            { "value": "medications", "label_ar": "الأدوية (حبة تحت اللسان، مضادات الحموضة، المسكنات)" },
+            { "value": "heat_rest", "label_ar": "الحرارة والراحة (كمادات دافئة، النوم بغرفة مظلمة)" }
+          ]
+        },
+        {
+          "id": "alleviating_factors_other",
+          "type": "text_area_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "تفاصيل حرة إضافية عن العوامل المخففة للألم",
+          "placeholder_ar": "أي تفاصيل ما بتغطيها الخيارات فوق..."
+        }
+      ]
+    },
+    {
+      "section_id": "time_and_severity",
+      "section_title_ar": "5. الوقت والشدة (Time Parameters & Severity Scale)",
+      "items": [
+        {
+          "id": "time_duration",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "2. المدة الزمنية (Duration): أديش إله الوجع عندك؟",
+          "placeholder_ar": "كم ساعة، كم يوم، أو كم شهر؟..."
+        },
+        {
+          "id": "time_pattern",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "3. نمط واستمرارية الألم (Pattern / Continuity): مستمر أم نوبات/مغص؟",
+          "placeholder_ar": "هل هو مستمر بدون انقطاع أم يأتي على شكل نوبات؟..."
+        },
+        {
+          "id": "time_frequency",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "4. التكرار والتردد (Frequency): كم مرة وكم تطول النوبة؟",
+          "placeholder_ar": "كم مرة تكررت النوبة وكم مدة كل نوبة؟..."
+        },
+        {
+          "id": "time_progression",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "5. التغير مع الوقت (Progression / Trend): بسوء ولا بخف ولا ثابت؟",
+          "placeholder_ar": "هل الألم يتزايد أم يتناقص أم ثابت؟..."
+        },
+        {
+          "id": "severity_scale",
+          "type": "rating_scale_1_to_10",
+          "symbol": "-Ø´",
+          "label_ar": "شدة الألم على مقياس من 1 إلى 10 (Severity Scale 1-10)",
+          "min_value": 1,
+          "max_value": 10,
+          "min_label": "1 (ألم خفيف جداً)",
+          "max_label": "10 (أسوأ ألم ممكن تتخيله)"
+        }
+      ]
+    },
+    {
+      "section_id": "review_of_systems",
+      "section_title_ar": "6. المسح الشامل للأجهزة (Review of Systems - ROS)",
+      "systems": [
+        {
+          "system_id": "ros_cvs",
+          "system_name_ar": "1. جهاز القلب والأوعية الدموية (CVS)",
+          "questions": [
+            { "id": "cvs_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] وجع الصدر مع الجهد: بتحس بوجع أو ضغطة بصدرك لما تمشي أو تبذل مجهود؟ (Chest pain)" },
+            { "id": "cvs_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] ضيق النفس عند النوم: بتقدر تنام فلات ولا بتضطر ترفع راسك بمخدات؟ (Orthopnea / PND)" },
+            { "id": "cvs_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] انتفاخ الرجلين والخفقان: رجلينك بينفخوا بآخر اليوم؟ أو بتحس بضربات قلبك بترقص؟ (Edema / Palpitations)" },
+            { "id": "cvs_q4_infant_sweating", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] عند الرضع: عرق غزير أثناء الرضاعة (Diaphoresis with Feeding) — علامة على قصور القلب عند الرضع (Heart Failure in Infants)" }
+          ]
+        },
+        {
+          "system_id": "ros_respiratory",
+          "system_name_ar": "2. الجهاز التنفسي (Respiratory System)",
+          "questions": [
+            { "id": "resp_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الكحة والبلغم: عندك كحة؟ وإذا اه، بطلع معها بلغم ولا ناشفة؟ (Cough & Sputum)" },
+            { "id": "resp_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الدم مع الكحة (التريك القاتل): عمرك كحيت دم أو شفت خيوط دم بالبلغم؟ (Hemoptysis)" },
+            { "id": "resp_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الصفير والتصفير: بتحس بصدرك بزيّق أو بصرصر وأنت بتتفس؟ (Wheezing)" }
+          ]
+        },
+        {
+          "system_id": "ros_gi",
+          "system_name_ar": "3. الجهاز الهضمي (GI System)",
+          "questions": [
+            { "id": "gi_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] البلع والحرقة: عندك صعوبة أو وجع لما تبلع الأكل؟ أو حرقة بالمعدة؟ (Dysphagia / Heartburn)" },
+            { "id": "gi_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] لون البراز والدم (التريك القاتل): شفت دم بالخرق؟ أو لون البراز طلع أسود زي الفحم؟ (Melena / Hematochezia)" },
+            { "id": "gi_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] التغير بالإخراج: صار عندك تغير مفاجئ بالعادة.. إسهال أو إمساك مستمر؟ (Bowel Habit)" }
+          ]
+        },
+        {
+          "system_id": "ros_gu",
+          "system_name_ar": "4. الجهاز البولي والتناسلي (GU System)",
+          "questions": [
+            { "id": "gu_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] حرقة ولون البول: في حرقان وأنت بتبول؟ أو تغير لون البول للأحمر/شاي؟ (Dysuria / Hematuria)" },
+            { "id": "gu_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] القيام بليل والتقطيع: بتقوم من النوم بليل كثير عشان تبول؟ أو البول بتقطع؟ (Nocturia / Hesitancy)" },
+            { "id": "gu_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الإفرازات والخاصرة: في وجع بخواصرك أو إفرازات مش طبيعية؟ (Flank pain / Discharge)" }
+          ]
+        },
+        {
+          "system_id": "ros_neuro",
+          "system_name_ar": "5. الجهاز العصبي (Neurological System)",
+          "questions": [
+            { "id": "neuro_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الصداع والدوخة: بيجيك صداع شديد أو دوخة وحسيت الدنيا بتلف فيك؟ (Headache / Vertigo)" },
+            { "id": "neuro_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الخدران والضعف (التريك القاتل): بتحس بخدران، تنميل، أو ضعف بأي إيد أو رجل؟ (Numbness / Weakness)" },
+            { "id": "neuro_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] التشنجات والإغماء: عمرك غبت عن الوعي أو صار معك تشنجات؟ (Syncope / Seizures)" }
+          ]
+        },
+        {
+          "system_id": "ros_msk",
+          "system_name_ar": "6. الجهاز العضلي والهيكلي (MSK System)",
+          "questions": [
+            { "id": "msk_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] وجع وانتفاخ المفاصل: في أي وجع، انتفاخ، أو احمرار بالمفاصل عندك؟ (Joint Pain)" },
+            { "id": "msk_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] تيبّس الصباح (التريك المميز): بتحس مفاصلك ناشفة ومصلبة أول ما تصحى من النوم؟ (Morning Stiffness)" },
+            { "id": "msk_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] صعوبة الحركة والعضلات: في ضعف أو وجع بعضلاتك بضايقك وأنت بتقوم أو بتمشي؟ (Muscle Weakness)" }
+          ]
+        },
+        {
+          "system_id": "ros_endocrine",
+          "system_name_ar": "7. جهاز الغدد الصماء (Endocrine System)",
+          "questions": [
+            { "id": "endo_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] تحمل الحرارة والبرودة: بتتحمل البرد والحر زي الناس الطبيعيين ولا بتضايق منهم؟ (Heat/Cold Intolerance)" },
+            { "id": "endo_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] العطش والتبول الزائد: بتحس حالك بتعطش وبتبول أضعاف الطبيعي؟ (Polydipsia / Polyuria)" },
+            { "id": "endo_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] تغيرات الوزن والجلد: لاحظت تغير مفاجئ بوزنك، أو جفاف بالجلد؟ (Weight / Skin Changes)" }
+          ]
+        },
+        {
+          "system_id": "ros_heme",
+          "system_name_ar": "8. الدم والأوعية الدموية (Hematology & Vascular)",
+          "questions": [
+            { "id": "heme_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] النزيف وسهولة التكدم: بصير عندك كدمات زرقاء بسهولة بدون انضراب؟ أو نزيف لثة/أنف؟ (Easy Bruising)" },
+            { "id": "heme_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] العقد اللمفاوية: لاحظت أي طابات طالعة برقبتك، تحت إبطك، أو بين فخذيك؟ (Lymphadenopathy)" },
+            { "id": "heme_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] التعب والصفار: بتحس حالك حيلك مهدود دايماً ووجهك شاحب أو أصفر؟ (Fatigue / Pallor)" }
+          ]
+        },
+        {
+          "system_id": "ros_derm",
+          "system_name_ar": "9. الجلد والنسيج الضام (Dermatology)",
+          "questions": [
+            { "id": "derm_q1", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الطفح والكتل: في أي طفح جلدي، حكة، أو حبوب جديدة طلعت ع جسمك؟ (Rash / Pruritus)" },
+            { "id": "derm_q2", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الشامات والتغيرات: عندك شامة تغير حجمها، شكلها، لونها أو صارت تنزف؟ (Mole Changes)" },
+            { "id": "derm_q3", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] تغيرات الأظافر والشعر: في تساقط شعر غريب أو تغيرات بأظافرك؟ (Hair/Nail Changes)" }
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "constitutional_symptoms",
+      "section_title_ar": "7. الأعراض العامة والجهازية (Constitutional Symptoms)",
+      "items": [
+        { "id": "const_weight_loss", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] فقدان الوزن غير المبرر (> 10% خلال 6 أشهر بدون دايت) (Unexplained Weight Loss)" },
+        { "id": "const_fever", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] الحرارة المجهولة / الليلية بدون سبب التهابي واضح (Fever of Unknown Origin)" },
+        { "id": "const_sweats", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] التعرق الليلي الغزير (بصحى بلاقي الأواعي والمخدة مغرقين مية) (Drenching Night Sweats)" },
+        { "id": "const_appetite", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] فقدان الشهية الشديد والنفور من الطعام (Anorexia / Loss of Appetite)" },
+        { "id": "const_fatigue", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] التعب والإرهاق الشديد المجهد المقعد (Severe Fatigue / Malaise)" },
+        { "id": "const_failure_to_thrive", "type": "checkbox", "symbol": "-ش", "label_ar": "[ ] تأخر أو توقف النمو عن المعدل الطبيعي (Failure to Thrive) — خاص بالأطفال" }
+      ]
+    },
+    {
+      "section_id": "past_medical_surgical_history",
+      "section_title_ar": "8. التاريخ المرضي والجراحي السابق (PMH & PSH)",
+      "items": [
+        { "id": "similar_admissions", "type": "checkbox", "symbol": "-ش", "label_ar": "أي دخول سابق للمستشفى لسبب شبيه بالشكوى الحالية؟" },
+        {
+          "id": "surgical_history_details",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "أي عمليات جراحية سابقة؟ (ذكر التاريخ، اسم المستشفى، نوع العملية، والطبيب الجراح)"
+        },
+        {
+          "id": "surgical_complications",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "مضاعفات (Complications) صارت مع أي عملية سابقة، إن وجدت",
+          "placeholder_ar": "اكتب المضاعفات إن وجدت، أو اترك فاضي إذا ما في"
+        },
+        {
+          "id": "current_symptom_meds",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "أدوية بتاخذها خصيصاً لهذه الأعراض والشكوى الحالية"
+        },
+        {
+          "id": "otc_meds",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "أدوية بدون وصفة طبية (OTC Medications / المسكنات)"
+        },
+        {
+          "id": "has_allergies",
+          "type": "checkbox_with_subfields",
+          "symbol": "-ش",
+          "label_ar": "حساسية الأدوية والأطعمة (Allergies - مثل حساسية البنسلين)",
+          "subfields": [
+            {
+              "id": "allergies_details",
+              "type": "text_input",
+              "symbol": "-Ùƒ",
+              "label_ar": "ما هي المادة المسببة للحساسية؟"
+            },
+            {
+              "id": "allergy_reaction_symptoms",
+              "type": "text_input",
+              "symbol": "-Ùƒ",
+              "label_ar": "شو صار بالضبط؟ (طفح جلدي، تورم، ضيق نفس، صدمة تحسسية...) — لتفريق الحساسية الحقيقية (Allergy) عن عدم التحمل (Intolerance)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "family_history",
+      "section_title_ar": "9. التاريخ العائلي (Family History)",
+      "items": [
+        {
+          "id": "family_details",
+          "type": "text_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "التاريخ العائلي (والديك وإخوتك أحياء؟ أمراض مزمنة بالعيلة؟ أعراض شبيهة بالعائلة؟)"
+        },
+        {
+          "id": "consanguinity",
+          "type": "checkbox",
+          "symbol": "-ش",
+          "label_ar": "[ ] زواج الأقارب بين الوالدين (Consanguinity)"
+        }
+      ]
+    },
+    {
+      "section_id": "pediatric_triadic_consultation_note",
+      "section_title_ar": "9أ. ملاحظة: المقابلة الثلاثية عند الأطفال (Pediatric History) 👨‍👩‍👧",
+      "visible_if": { "field": "history_type", "values": ["pediatric"] },
+      "items": [
+        {
+          "id": "triadic_consultation_note",
+          "type": "info_note",
+          "title_ar": "The Triadic Consultation — مع مين عم تحكي؟",
+          "body_ar": "شغل الأطفال مش زي الكبار، لازم تعرف مع مين عم تحكي:\n\n**الرضع والأطفال الصغار (Infants & Toddlers):** الأهل هم \"البروكسي\" (The Parent as Proxy) — المعلومات كلها بتيجي من الأهل، ودورك إنت راقب الطفل بصمت (لعب، حركته، تفاعله).\n\n**أطفال المدرسة (School-aged):** المقابلة المزدوجة (The Dual Interview) — بتدخل الطفل نفسه بالحكي، اسأله أسئلة بسيطة بالبداية، وبعدين اتأكد من التفاصيل الصعبة مع الأهل.\n\n**المراهقين (Adolescents):** المريض المستقل (The Independent Patient) — احترام الخصوصية والسرية هو الأساس. ضروري جداً تعطي وقت تحكي فيه لحالكم بدون الأهل (لأن في مواضيع ممكن المراهق ما يحكيها قدام أهله زي التدخين أو المشاكل النفسية)."
+        }
+      ]
+    },
+    {
+      "section_id": "antenatal_natal_postnatal_history",
+      "section_title_ar": "9ب. تاريخ ما قبل وأثناء وبعد الولادة (Antenatal, Natal & Postnatal History)",
+      "visible_if": { "field": "history_type", "values": ["pediatric"] },
+      "items": [
+        {
+          "id": "maternal_age_at_pregnancy",
+          "type": "number_input",
+          "symbol": "-ك",
+          "label_ar": "عمر الأم وقت الحمل (Maternal Age)"
+        },
+        {
+          "id": "antenatal_torch_infections",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "🦠 عدوى TORCH أثناء الحمل (Toxoplasmosis, Other, Rubella, CMV, HSV) — إن وجدت"
+        },
+        {
+          "id": "antenatal_medications",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "أدوية استخدمتها الأم أثناء الحمل (Medications during pregnancy)"
+        },
+        {
+          "id": "antenatal_us_anomalies",
+          "type": "checkbox_with_subfields",
+          "symbol": "-ش",
+          "label_ar": "هل ظهرت أي عيوب خلقية بالسونار أثناء الحمل؟ (Congenital anomalies on antenatal ultrasound)",
+          "subfields": [
+            {
+              "id": "antenatal_us_anomalies_details",
+              "type": "text_input",
+              "symbol": "-ك",
+              "label_ar": "وضح العيوب التي ظهرت بالسونار"
+            }
+          ]
+        },
+        {
+          "id": "natal_term_preterm",
+          "type": "single_choice",
+          "symbol": "-ش",
+          "label_ar": "الولادة: بوقتها أم مبكرة؟ (Term vs Preterm)",
+          "options": [
+            { "value": "term", "label_ar": "بوقتها (Term)" },
+            { "value": "preterm", "label_ar": "مبكرة (Preterm)" },
+            { "value": "post_term", "label_ar": "متأخرة (Post-term)" }
+          ]
+        },
+        {
+          "id": "natal_mode_of_delivery",
+          "type": "single_choice",
+          "symbol": "-ش",
+          "label_ar": "طريقة الولادة (Mode of Delivery)",
+          "options": [
+            { "value": "svd", "label_ar": "طبيعي (SVD)" },
+            { "value": "c_section", "label_ar": "قيصرية (C-section)" },
+            { "value": "assisted", "label_ar": "شفط / ملقط (Assisted / Vacuum / Forceps)" }
+          ]
+        },
+        {
+          "id": "birth_weight",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "وزن الولادة (Birth Weight)"
+        },
+        {
+          "id": "prolonged_rom",
+          "type": "checkbox",
+          "symbol": "-ش",
+          "label_ar": "[ ] انفتاح ماء العضد لفترة طويلة قبل الولادة (Prolonged Rupture of Membranes)"
+        },
+        {
+          "id": "postnatal_apgar_score",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "فحص الـ APGAR (عند دقيقة 1 و 5)"
+        },
+        {
+          "id": "postnatal_resuscitation",
+          "type": "checkbox",
+          "symbol": "-ش",
+          "label_ar": "[ ] احتاج إنعاش بعد الولادة (Needed Resuscitation)"
+        },
+        {
+          "id": "postnatal_nicu_admission",
+          "type": "checkbox_with_subfields",
+          "symbol": "-ش",
+          "label_ar": "[ ] دخل الحضانة / وحدة العناية المركزة لحديثي الولادة (NICU Admission)",
+          "subfields": [
+            {
+              "id": "postnatal_nicu_reason_duration",
+              "type": "text_input",
+              "symbol": "-ك",
+              "label_ar": "السبب والمدة"
+            }
+          ]
+        },
+        {
+          "id": "postnatal_early_jaundice",
+          "type": "checkbox",
+          "symbol": "-ش",
+          "label_ar": "[ ] صفار مبكر (Early Neonatal Jaundice)"
+        },
+        {
+          "id": "postnatal_resp_distress_seizures",
+          "type": "checkbox",
+          "symbol": "-ش",
+          "label_ar": "[ ] صعوبة تنفس أو تشنجات بعد الولادة (Respiratory Distress / Seizures)"
+        }
+      ]
+    },
+    {
+      "section_id": "pediatric_dietary_history",
+      "section_title_ar": "9ج. تاريخ التغذية عند الأطفال (Infant & Child Dietary History) 🍼",
+      "visible_if": { "field": "history_type", "values": ["pediatric"] },
+      "items": [
+        {
+          "id": "feeding_type",
+          "type": "single_choice",
+          "symbol": "-ش",
+          "label_ar": "نوع الرضاعة (Feeding Type)",
+          "options": [
+            { "value": "breast", "label_ar": "رضاعة طبيعية (Breastfeeding)" },
+            { "value": "formula", "label_ar": "حليب صناعي (Formula)" },
+            { "value": "mixed", "label_ar": "مختلط (Mixed)" },
+            { "value": "weaned_solids", "label_ar": "فطم / أكل عادي (Weaned / Solid diet)" }
+          ]
+        },
+        {
+          "id": "breastfeeding_frequency_duration_latching",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "الرضاعة الطبيعية: كم مرة؟ قديش المدة؟ وهل بيرضع صح (Latching)؟"
+        },
+        {
+          "id": "formula_brand_amount",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "الحليب الصناعي: الماركة والكمية"
+        },
+        {
+          "id": "formula_preparation_method",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "طريقة تحضير الحليب الصناعي (Preparation method) — للتأكد من عدم تخفيف الحليب زيادة عن اللزوم (Dilution errors)"
+        },
+        {
+          "id": "weaning_onset",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "الفطام: متى بلّش الطفل ياكل أكل صلب؟ (Weaning onset)"
+        },
+        {
+          "id": "dietary_24h_recall",
+          "type": "text_area_input",
+          "symbol": "-ك",
+          "label_ar": "وجبات آخر 24 ساعة (24-hour dietary recall)"
+        },
+        {
+          "id": "dietary_food_groups_iron_calcium_vitamins",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "المجموعات الغذائية المتناولة (حديد، كالسيوم، فيتامينات)"
+        },
+        {
+          "id": "dietary_behaviors",
+          "type": "checkbox_with_subfields",
+          "symbol": "-ش",
+          "label_ar": "[ ] سلوكيات غذائية ملحوظة (انتقائية بالأكل، معارك عالأكل، أو أكل مواد غير غذائية)",
+          "subfields": [
+            {
+              "id": "dietary_pica",
+              "type": "checkbox",
+              "symbol": "-ش",
+              "label_ar": "[ ] Pica — أكل أشياء مش غذاء (زي التراب) — يدل على نقص حديد (Iron deficiency)"
+            },
+            {
+              "id": "dietary_behavior_details",
+              "type": "text_input",
+              "symbol": "-ك",
+              "label_ar": "تفاصيل أخرى"
+            }
+          ]
+        },
+        {
+          "id": "growth_chart_note",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "ربط الأكل بمخططات النمو (Growth Charts) — الوزن والطول بالنسبة للعمر"
+        }
+      ]
+    },
+    {
+      "section_id": "pediatric_immunization_history",
+      "section_title_ar": "9د. تاريخ المطاعيم (Immunization History) 💉",
+      "visible_if": { "field": "history_type", "values": ["pediatric"] },
+      "items": [
+        {
+          "id": "immunization_card_checked",
+          "type": "checkbox",
+          "symbol": "-ش",
+          "label_ar": "[ ] تم فحص دفتر/كارت التطعيمات فعلياً (وليس بالاعتماد على ذاكرة الأهل فقط)"
+        },
+        {
+          "id": "immunization_missed_doses",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "الجرعات الفائتة أو المتأخرة مقارنة بجدول التطعيمات الوطني"
+        },
+        {
+          "id": "immunization_adverse_reactions",
+          "type": "checkbox_with_subfields",
+          "symbol": "-ش",
+          "label_ar": "[ ] أعراض جانبية سابقة من أي مطعوم (تحسس شديد/Anaphylaxis، حرارة عالية طويلة، تشنجات)",
+          "subfields": [
+            {
+              "id": "immunization_adverse_reactions_details",
+              "type": "text_input",
+              "symbol": "-ك",
+              "label_ar": "وضح المطعوم ونوع الرد الفعل"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "pediatric_developmental_history",
+      "section_title_ar": "9هـ. التاريخ التطوري (Developmental History)",
+      "visible_if": { "field": "history_type", "values": ["pediatric"] },
+      "items": [
+        {
+          "id": "dev_motor_gross",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "المهارات الحركية الكبيرة (Gross Motor) — تحكم بالراس، الجلوس، الحبو، المشي"
+        },
+        {
+          "id": "dev_motor_fine",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "المهارات الحركية الدقيقة (Fine Motor) — مسكة الشيء بين إصبعين، الرسم"
+        },
+        {
+          "id": "dev_speech_hearing",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "الكلام والسمع (Speech & Hearing) — المناغاة/الثرثرة (Babbling، عادة من 4-6 أشهر) وصولاً للكلمات الأولى"
+        },
+        {
+          "id": "dev_social_emotional",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "الاجتماعي والعاطفي (Social & Emotional) — التفاعل مع الناس"
+        },
+        {
+          "id": "dev_school_performance",
+          "type": "text_input",
+          "symbol": "-ك",
+          "label_ar": "التحصيل الدراسي ومستوى الطفل بالمدرسة (School Performance)"
+        }
+      ]
+    },
+    {
+      "section_id": "social_history",
+      "section_title_ar": "10. التاريخ الاجتماعي والتنميط (Social History)",
+      "items": [
+        {
+          "id": "smoking_status",
+          "type": "checkbox_with_subfields",
+          "symbol": "-Ø´",
+          "label_ar": "هل تدخن؟ (Smoking History)",
+          "subfields": [
+            {
+              "id": "packs_per_day",
+              "type": "number_input",
+              "symbol": "🚬",
+              "label_ar": "عدد الباكيتات باليوم (Packs per day)"
+            },
+            {
+              "id": "smoking_years",
+              "type": "number_input",
+              "symbol": "-Ùƒ",
+              "label_ar": "عدد سنوات التدخين (Years of smoking)"
+            },
+            {
+              "id": "calculated_pack_years",
+              "type": "auto_calculated_field",
+              "symbol": "-ك (تلقائي)",
+              "label_ar": "مجموع السنين التدخينية (Pack-Years = Packs/Day × Years)",
+              "formula": "packs_per_day * smoking_years"
+            }
+          ]
+        },
+        {
+          "id": "alcohol_substance_use",
+          "type": "checkbox",
+          "symbol": "-Ø´",
+          "label_ar": "شرب الكحوليات أو إدمان أي مواد/مخدرات (Alcohol or Substance Abuse)"
+        }
+      ]
+    },
+    {
+      "section_id": "ice_framework",
+      "section_title_ar": "11. إدراك وشعور المريض (ICE Framework)",
+      "items": [
+        {
+          "id": "ice_ideas_concerns_expectations",
+          "type": "text_area_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "تفاصيل الـ ICE (Ideas: شو متوقع سبب مرضك؟ / Concerns: شو أكثر شيء مخوفك؟ / Expectations: شو متوقع منا نعملك اليوم؟)",
+          "placeholder_ar": "اكتب أفكار وتخوفات وتوقعات المريض هنا..."
+        }
+      ]
+    },
+    {
+      "section_id": "case_summary_writeup",
+      "section_title_ar": "12. الخلاصة المنظمة (Case Summary)",
+      "items": [
+        {
+          "id": "case_summary_text",
+          "type": "text_area_input",
+          "symbol": "-Ùƒ",
+          "label_ar": "اكتب هون خلاصة التاريخ المرضي كامل بطريقة مرتبة ومنظمة (Summary)",
+          "placeholder_ar": "مثال: مريض/ة عمره X، جاء بشكوى Y منذ Z، مع تاريخ من..."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="clinical">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr. Monic — Medical Cases</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="read-progress" id="readProgress"></div>
+
+<!-- ════════════ MAIN APP ════════════ -->
+<div id="app">
+
+  <!-- Header -->
+  <header class="header">
+    <a class="logo" href="#" onclick="showHome(); return false;">
+      <div class="logo-icon">🏥</div>
+      <div class="logo-text">Dr.<span>Monic</span> Cases</div>
+    </a>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-icon" onclick="exportFullBackup()" title="تصدير نسخة احتياطية كاملة">
+        <span>💾</span>
+      </button>
+      <button class="btn btn-ghost btn-icon" onclick="toggleTheme()" id="themeToggleBtn" title="تبديل الثيم">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <button class="btn btn-ghost btn-sm" id="notesNavBtn" onclick="showNotesView()">
+        <span>✎</span> <span>ملاحظاتي</span>
+      </button>
+      <div class="header-more-wrap">
+        <button class="btn btn-ghost btn-sm" onclick="toggleHeaderMoreMenu(event)">
+          <span>☰</span> <span>المزيد</span>
+        </button>
+        <div class="header-more-menu" id="headerMoreMenu">
+          <button onclick="closeHeaderMoreMenu();showMonicQbankView()"><span>🧠</span> MonicQbank</button>
+          <button onclick="closeHeaderMoreMenu();showMcqQuizView()"><span>🎲</span> MCQ عشوائي</button>
+          <button onclick="closeHeaderMoreMenu();showHistoryView()"><span>📋</span> التاريخ المرضي</button>
+          <button onclick="closeHeaderMoreMenu();showLabValuesView()"><span>🧪</span> قيم التحاليل</button>
+          <button onclick="closeHeaderMoreMenu();showEcgLibraryView()"><span>🫀</span> ECG Library</button>
+          <button onclick="closeHeaderMoreMenu();showXrayLibraryView()"><span>🩻</span> أطلس الأشعة</button>
+          <button onclick="closeHeaderMoreMenu();showPharmaLibraryView()"><span>💊</span> Pharmacology Cards</button>
+          <button onclick="closeHeaderMoreMenu();showInteractionsView()"><span>🔀</span> تفاعلات الأدوية</button>
+          <button onclick="closeHeaderMoreMenu();showCompareView()"><span>⚔️</span> قارن الاثنين</button>
+          <button onclick="closeHeaderMoreMenu();showMicroTreeView()"><span>🦠</span> شجرة الأحياء الدقيقة</button>
+          <button onclick="closeHeaderMoreMenu();showGamificationView()"><span>🏆</span> متجر المكافآت والتحفيز</button>
+          <button onclick="closeHeaderMoreMenu();showRedFlagsView()"><span>🚩</span> Red Flags Checklist</button>
+          <button onclick="closeHeaderMoreMenu();showAnalyticsView()"><span>📊</span> الإنجاز والتحليل الشخصي</button>
+          <button onclick="closeHeaderMoreMenu();showAbbrevView()"><span>🩺</span> بنك الاختصارات الطبية</button>
+        </div>
+      </div>
+      <span class="gam-header-xp" id="gamHeaderBadge" onclick="showGamificationView()" style="cursor:pointer;" title="رصيدك الحالي من نقاط الخبرة">⭐ 0 XP</span>
+      <span class="gam-header-xp" id="gamStreakBadge" style="background:rgba(248,113,113,0.14);border-color:rgba(248,113,113,0.35);color:#F87171;" title="أيام الالتزام المتتالية">🔥 0</span>
+      <button class="btn btn-ghost btn-icon" onclick="showAdmin()" id="adminBtn" title="الإعدادات">
+        <span>⚙️</span>
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="openCreateModal()">
+        <span>✚</span> <span>حالة جديدة</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══ HOME VIEW ══ -->
+  <div id="homeView">
+    <div class="home-tools">
+      <div>
+        <div class="search-wrap">
+          <input class="consultant-search" id="consultantSearch" placeholder="The Consultant Search: Potassium, Vomiting, Down Syndrome..." oninput="handleSearchInput()" />
+        </div>
+        <div class="search-count" id="searchCount"></div>
+      </div>
+      <div class="backup-actions">
+        <button class="btn btn-ghost btn-sm" id="folderSyncBtn" onclick="connectSaveFolder()" style="display:none;">🔗 ربط مجلد للحفظ التلقائي</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportCases()">⬇️ Backup JSON</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('restoreFile').click()">⬆️ Restore JSON</button>
+        <input type="file" id="restoreFile" accept="application/json,.json" style="display:none;" onchange="importCases(this)" />
+      </div>
+    </div>
+    <!-- Question of the Day -->
+    <div id="qotdWrap" style="max-width:900px;margin:0 auto 18px;padding:0 14px;"></div>
+    <!-- Specialty Bar -->
+    <div class="specialty-bar" id="specialtyBar">
+      <span class="specialty-label">التخصص:</span>
+    </div>
+    <!-- Cases Grid -->
+    <div class="cases-grid" id="casesGrid"><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div>
+  </div>
+
+  <!-- ══ CASE VIEW ══ -->
+  <div id="caseView">
+    <div class="back-bar">
+      <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+      <div class="breadcrumb">الحالات / <span id="cvBreadcrumb"></span></div>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost btn-sm" id="ttsBtn" onclick="ttsToggleCase()" title="استماع للحالة">🔊 استماع</button>
+      <button class="btn btn-ghost btn-sm" onclick="ttsOpenSettings()" title="إعدادات القراءة الصوتية">⚙️</button>
+      <button class="btn btn-ghost btn-sm" onclick="duplicateCurrentCase()" title="نسخ الحالة">📋 نسخ</button>
+      <button class="btn btn-ghost btn-sm" onclick="shareCurrentCase()" title="مشاركة حالة واحدة">🔗 مشاركة</button>
+      <button class="btn btn-ghost btn-sm" onclick="removeCurrentReviewed()" title="إزالة تمت المراجعة">↩️ إزالة المراجعة</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportCaseAsImage()" title="تصدير كصورة">🖼️ صورة</button>
+      <button class="btn btn-ghost btn-sm" onclick="printCurrentCase()" title="طباعة / PDF">🖨️ طباعة</button>
+      <button class="btn btn-ghost btn-sm" onclick="editCurrentCase()">✏️ تعديل</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteCurrentCase()">🗑️ حذف</button>
+    </div>
+    <div id="caseViewContent"></div>
+    <div id="caseViewFooter"></div>
+  </div>
+
+  <!-- ══ ADMIN VIEW ══ -->
+  <div id="adminPanel">
+    <div class="back-bar" style="margin-bottom:20px;">
+      <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+      <div class="breadcrumb"><span>الإعدادات</span></div>
+    </div>
+    <div class="admin-section" style="border:1px solid var(--teal);">
+      <div class="admin-section-title">💾 نسخة احتياطية كاملة (Full Backup & Restore)</div>
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:14px;">
+        تصدير يشمل كل شي: الحالات، الملاحظات، بطاقات المراجعة، بيانات التحاليل المخبرية (CBC, KFTs, LFTs, ABG...) والحاسبات المركّبة، الإعدادات، المفضلة، والمظهر — بملف واحد تقدر تنقله بين جهازك والموبايل.
+      </p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" onclick="exportFullBackup()">⬇️ تصدير نسخة كاملة</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('fullBackupImportFile').click()">⬆️ استيراد واستعادة</button>
+        <input type="file" id="fullBackupImportFile" accept="application/json,.json" style="display:none;" onchange="importFullBackup(this)" />
+      </div>
+      <div id="fullBackupStatus" style="color:var(--text2);font-size:0.8rem;margin-top:10px;"></div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">📦 نسخة احتياطية لقسم واحد بس</div>
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:14px;">
+        لو بدك تنقل قسم واحد بس (متل الفحص السريري) من جهاز لجهاز — مثلًا من جهاز قديم عنده بيانات أقدم — بدون ما يلمس باقي بياناتك. الاستيراد بيدمج: أي عنصر موجود أصلًا (بنفس الـID أو نفس المحتوى) بيتجاهل، وبس الجديد بينضاف.
+      </p>
+      <div id="moduleBackupList" style="display:flex;flex-direction:column;gap:10px;"></div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border,rgba(255,255,255,0.08));">
+        <button class="btn btn-ghost btn-sm" onclick="cleanupDuplicateCases()">🧹 نظّف الحالات المكررة</button>
+        <div class="magic-hint">لو صار عندك حالات متكررة (نفس الاسم/الشكوى/التشخيص بـID مختلف) بسبب استيراد سابق، هالزر بيلاقيهم ويشيل التكرار ويخلي وحدة بس من كل حالة.</div>
+      </div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">💬 رسالة البداية (قبل فتح الحالة)</div>
+      <div class="form-group">
+        <label class="form-label">نص الرسالة التحفيزية / الإيمانية:</label>
+        <textarea class="form-textarea" id="msg1Text" rows="4" placeholder="اكتب هنا الرسالة التي تظهر قبل بدء الحالة..."></textarea>
+      </div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">📋 قائمة التاريخ المرضي (History Taking)</div>
+      <div class="form-group">
+        <label class="form-label">🫀 صورة التشريح لتحديد موقع الألم (site.png)</label>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <img id="hxSiteImgPreview" style="max-width:120px;max-height:120px;border-radius:8px;border:1px solid var(--border);display:none;" />
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('hxSiteImgFile').click()">📁 ارفع/استبدل الصورة</button>
+          <input type="file" id="hxSiteImgFile" accept="image/*" style="display:none;" onchange="uploadHxSiteImage(this.files)" />
+        </div>
+        <div class="magic-hint">ارفع صورة الجسم/العضو التشريحية مرة وحدة، وراح تنحفظ محليًا وتستخدم بأداة "موقع الألم" جوا فورم التاريخ المرضي.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🔄 تحديث Schema الفورم (JSON)</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('hxSchemaFile').click()">📁 استيراد schema محدّث</button>
+          <input type="file" id="hxSchemaFile" accept="application/json,.json" style="display:none;" onchange="importHxSchema(this.files)" />
+          <button class="btn btn-ghost btn-sm" onclick="resetHxSchemaToDefault()">↩️ رجّع للنسخة الافتراضية</button>
+        </div>
+        <div class="magic-hint" id="hxSchemaOverrideStatus"></div>
+        <div class="magic-hint">الفورم مبني حاليًا من schema جاهزة مدمجة بالكود. إذا بعتّلك نسخة معدّلة من ملف الـ JSON، ارفعها هون وراح تستبدل النسخة الحالية تلقائيًا بدون تعديل كود. تنبيه: أي ملف ترفعه هون بيثبّت ويستمر يشتغل بدل النسخة المدمجة حتى لو حدّثت الكود لاحقًا — إذا حسيت إنه في تحديثات جديدة مو ظاهرة، اضغط "رجّع للنسخة الافتراضية".</div>
+      </div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">🎨 المظهر</div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="checkbox" id="lightIconsToggle" onchange="toggleLightIcons(this.checked)" style="width:18px;height:18px;" />
+          أيقونات أخف وأقل إزعاجاً
+        </label>
+        <div class="magic-hint">زر الثيم بالأعلى 🌙 يبدّل بين: داكن ← فاتح ← دافئ نهاري ← ليلي هادئ ← 🌊 محيطي أزرق ← 🪐 سديمي بنفسجي.</div>
+      </div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">📊 مساحة التخزين</div>
+      <div id="storageUsageArea">
+        <div class="magic-hint">جاري الحساب...</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="renderStorageUsage()">🔄 تحديث</button>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">👤 الملف الشخصي</div>
+      <div class="form-group">
+        <label class="form-label">الاسم:</label>
+        <input type="text" class="form-input" id="profileSettingsName" placeholder="اسمك الأول" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">الجنس:</label>
+        <div style="display:flex;gap:10px;">
+          <button type="button" class="btn btn-ghost btn-sm" id="profileSettingsMaleBtn" onclick="profileSettingsSetGender('male')">👦 ذكر</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="profileSettingsFemaleBtn" onclick="profileSettingsSetGender('female')">👧 أنثى</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">الأفاتار:</label>
+        <div id="profileSettingsEmojiRow" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="saveProfileSettings()">💾 حفظ الملف الشخصي</button>
+      <div class="magic-hint">أي تغيير هون بينحفظ فورًا وبينعكس تلقائيًا على الترحيب بالأعلى والمساعد الذكي 🤖 بدون ما تحتاج تعيد فتح الموقع.</div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">🎉 رسالة النهاية (بعد إنهاء الحالة)</div>
+      <div class="form-group">
+        <label class="form-label">نص الرسالة التحفيزية:</label>
+        <textarea class="form-textarea" id="msg2Text" rows="4" placeholder="اكتب هنا الرسالة التي تظهر بعد إنهاء الحالة..."></textarea>
+      </div>
+    </div>
+    <div style="text-align:left; padding-bottom:40px;">
+      <button class="btn btn-primary" onclick="saveAdminSettings()">💾 حفظ الإعدادات</button>
+    </div>
+  </div>
+
+  <!-- ══ NOTES VIEW ══ -->
+  <div id="notesView">
+    <div class="notes-view-head">
+      <h1>ملاحظاتي</h1>
+      <p>مراجعة منظمة وسهلة القراءة</p>
+    </div>
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="notesCount"></span>
+      </div>
+      <div class="notes-toolbar-right">
+        <input class="consultant-search" id="notesSearch" placeholder="بحث في الملاحظات..." oninput="renderNotes()" style="width:220px;padding:9px 14px;" />
+        <button class="btn btn-ghost btn-sm" id="notesModeToggleBtn" onclick="toggleNotesDisplayMode()">🎴 عرض كفلاش كارد</button>
+        <button class="btn btn-ghost btn-sm" onclick="openNoteAutoFillModal()">⚡ تعبئة تلقائية</button>
+        <button class="btn btn-ghost btn-sm" id="notesBulkToggleBtn" onclick="toggleNoteBulkMode()">☑️ تحديد جماعي</button>
+        <button class="btn btn-danger btn-sm" id="notesBulkDeleteBtn" style="display:none;" onclick="deleteSelectedNotes()">🗑️ حذف المحدد (<span id="notesBulkCount">0</span>)</button>
+        <button class="btn btn-amber btn-sm" onclick="addNote()">✚ بطاقة جديدة</button>
+      </div>
+    </div>
+    <div class="notes-grid" id="notesGrid"></div>
+  </div>
+
+  <!-- ══ NOTE FULLSCREEN VIEWER ══ -->
+  <div class="note-zoom-overlay" id="noteZoomOverlay" onclick="if(event.target===this) closeNoteZoom()">
+    <div class="note-zoom-card" id="noteZoomCard" data-color="amber">
+      <div class="note-zoom-topbar">
+        <div class="note-zoom-icon" id="noteZoomIcon">✎</div>
+        <div class="note-zoom-title" id="noteZoomTitle"></div>
+        <button class="note-zoom-close" title="إغلاق" onclick="closeNoteZoom()">✕</button>
+      </div>
+      <div class="note-zoom-body" id="noteZoomBody"></div>
+      <div class="note-zoom-footer">
+        <button class="note-zoom-done" id="noteZoomDoneBtn" onclick="markNoteReviewedAndClose()">✅ تمت المراجعة — إغلاق</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeNoteZoom()">إغلاق فقط</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TRICKS VIEW ══ -->
+  <div id="tricksView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="tricksCount"></span>
+      </div>
+      <div class="notes-toolbar-right">
+        <input class="consultant-search" id="tricksSearch" placeholder="بحث في التريكات..." oninput="renderTricks()" style="width:220px;padding:9px 14px;" />
+      </div>
+    </div>
+    <div id="tricksList" style="padding-bottom:40px;"></div>
+  </div>
+
+  <!-- ══ REVIEW CARDS VIEW (converted from notes) ══ -->
+  <div id="reviewCardsView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="reviewCardsCount"></span>
+      </div>
+      <div class="notes-toolbar-right">
+        <span style="color:var(--text2);font-size:0.8rem;">اضغط على البطاقة أو Space لقلبها</span>
+      </div>
+    </div>
+    <div class="notes-grid" id="reviewCardsGrid"></div>
+  </div>
+
+  <!-- ══ MCQ QUIZ VIEW ══ -->
+  <div id="mcqQuizView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="mcqQuizCount"></span>
+      </div>
+    </div>
+    <div class="mcq-quiz-wrap" id="mcqQuizWrap"></div>
+  </div>
+
+  <!-- ══ LAB VALUES ANALYZER ══ -->
+  <div id="labValuesView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;">🧪 محلل الفحوصات الطبية التفاعلي</span>
+      </div>
+      <div class="notes-toolbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('labImportFiles').click()">📁 استيراد بيانات JSON</button>
+        <input type="file" id="labImportFiles" accept="application/json,.json" multiple style="display:none;" onchange="importLabJsonFiles(this.files)" />
+      </div>
+    </div>
+
+    <div class="lab-toolbar-wrap">
+      <div class="lab-import-bar" id="labImportStatusBar">جاري التحقق من البيانات المستوردة...</div>
+
+      <div style="text-align:center;">
+        <div class="lab-gender-toggle">
+          <button class="lab-gender-btn male" id="labGenderMaleBtn" onclick="setLabGender('male')">👨 Male</button>
+          <button class="lab-gender-btn female" id="labGenderFemaleBtn" onclick="setLabGender('female')">👩 Female</button>
+        </div>
+      </div>
+
+      <div class="lab-search-row">
+        <input class="lab-search-input" id="labSearchInput" placeholder="🔍 دوّر عن تحليل (مثال: صوديوم، Hb، K+)..." oninput="renderLabTestsGrid()" />
+      </div>
+
+      <div class="lab-panels-row" id="labPanelsRow"></div>
+
+      <div class="lab-tests-grid" id="labTestsGrid"></div>
+
+      <div id="labSelectedTestArea"></div>
+
+      <div id="labCombinedArea" style="margin-top:30px;"></div>
+    </div>
+  </div>
+
+  <!-- ══ HISTORY TAKING CHECKLIST ══ -->
+  <div id="historyView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" id="hxBackBtn" onclick="hxShowList()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="hxListCount"></span>
+      </div>
+      <div class="notes-toolbar-right" id="hxListToolbar">
+        <button class="btn btn-primary btn-sm" onclick="hxNewEntry()">➕ فحص جديد</button>
+      </div>
+    </div>
+    <div id="hxListArea" class="hx-list-grid" style="padding-bottom:40px;"></div>
+    <div id="hxFormArea" class="hx-wrap" style="display:none;"></div>
+  </div>
+
+  <!-- ══ ECG LIBRARY ══ -->
+  <div id="ecgLibraryView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" id="ecgBackBtn" onclick="ecgShowList()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="ecgListCount"></span>
+      </div>
+      <div class="notes-toolbar-right" id="ecgListToolbar">
+        <input class="consultant-search" id="ecgSearch" placeholder="بحث بالتشخيص أو النص..." oninput="renderEcgList()" style="width:220px;padding:9px 14px;" />
+        <button class="btn btn-ghost btn-sm" onclick="ecgViewAll()">📖 عرض الكل</button>
+        <button class="btn btn-primary btn-sm" onclick="ecgNewEntry()">➕ حالة ECG جديدة</button>
+      </div>
+    </div>
+    <div id="ecgListArea" class="ecg-list-grid" style="padding-bottom:40px;"></div>
+    <div id="ecgFormArea" class="ecg-wrap" style="display:none;"></div>
+    <div id="ecgDetailArea" class="ecg-wrap" style="display:none;"></div>
+  </div>
+
+  <!-- ══ CLINICAL SOUNDS LIBRARY (Auscultation) ══ -->
+  <div id="soundsLibraryView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" id="soundsBackBtn" onclick="soundsShowList()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="soundsListCount"></span>
+      </div>
+      <div class="notes-toolbar-right" id="soundsListToolbar">
+        <input class="consultant-search" id="soundsSearch" placeholder="بحث باسم الصوت أو التشخيص..." oninput="renderSoundsList()" style="width:220px;padding:9px 14px;" />
+        <button class="btn btn-primary btn-sm" onclick="soundsNewEntry()">➕ صوت جديد</button>
+      </div>
+    </div>
+    <div id="soundsListArea" class="ecg-list-grid" style="padding-bottom:40px;"></div>
+    <div id="soundsFormArea" class="ecg-wrap" style="display:none;"></div>
+    <div id="soundsDetailArea" class="ecg-wrap" style="display:none;"></div>
+  </div>
+
+  <!-- ══ X-RAY ATLAS MODULE ══ -->
+  <div id="xrayLibraryView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" id="xrayBackBtn" onclick="xrayShowList()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="xrayListCount"></span>
+      </div>
+      <div class="notes-toolbar-right" id="xrayListToolbar">
+        <input class="consultant-search" id="xraySearch" placeholder="بحث بالاسم أو التريكات..." oninput="renderXrayList()" style="width:220px;padding:9px 14px;" />
+        <button class="btn btn-primary btn-sm" onclick="xrayNewEntry()">➕ حالة أشعة جديدة</button>
+      </div>
+    </div>
+    <div class="lab-panels-row" id="xrayCategoryRow" style="max-width:1200px;margin:0 auto 18px;padding:0 4px;"></div>
+    <div id="xrayListArea" class="ecg-list-grid" style="padding-bottom:40px;"></div>
+    <div id="xrayFormArea" class="ecg-wrap" style="display:none;"></div>
+    <div id="xrayDetailArea" class="ecg-wrap" style="display:none;"></div>
+  </div>
+
+  <!-- ══ PHYSICAL EXAMINATION MODULE ══ -->
+  <div id="peLibraryView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" id="peBackBtn" onclick="peShowFlowchart()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="peListCount"></span>
+      </div>
+      <div class="notes-toolbar-right" id="peToolbar">
+        <button class="btn btn-primary btn-sm" onclick="peNewStep()">➕ إضافة خطوة</button>
+      </div>
+    </div>
+    <div class="pe-layout">
+      <div class="pe-sidebar" id="peCategoryRow"></div>
+      <div class="pe-main">
+        <div id="peHeroWrap"></div>
+        <input type="file" id="peHeroFileInput" accept="image/*" style="display:none;" onchange="peHeroImageFileChosen(this)" />
+        <div class="pe-stepper" id="peStepper"></div>
+        <div id="peFlowchartArea" class="pe-flowchart"></div>
+      </div>
+    </div>
+    <div id="peFormArea" class="ecg-wrap" style="display:none;"></div>
+  </div>
+
+  <!-- ══ PHARMACOLOGY QUICK-CARDS MODULE ══ -->
+  <div id="pharmaLibraryView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" id="pharmaBackBtn" onclick="pharmaShowList()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="pharmaListCount"></span>
+      </div>
+      <div class="notes-toolbar-right" id="pharmaListToolbar">
+        <input class="consultant-search" id="pharmaSearch" placeholder="بحث باسم الدواء أو العائلة..." oninput="renderPharmaList()" style="width:220px;padding:9px 14px;" />
+        <button class="btn btn-ghost btn-sm" id="pharmaTestModeBtn" onclick="pharmaToggleTestMode()">🙈 وضع الاختبار</button>
+        <button class="btn btn-ghost btn-sm" onclick="pharmaOpenBulkPaste()">🪄 لصق تلقائي</button>
+        <button class="btn btn-primary btn-sm" onclick="pharmaNewEntry()">➕ دواء جديد</button>
+      </div>
+    </div>
+    <div id="pharmaListArea" class="pharma-list-wrap" style="padding-bottom:40px;"></div>
+    <div id="pharmaFormArea" class="ecg-wrap" style="display:none;"></div>
+    <div id="pharmaDetailArea" class="ecg-wrap" style="display:none;"></div>
+  </div>
+
+  <!-- ══ DRUG INTERACTIONS CHECKER ══ -->
+  <div id="interactionsView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;">🔀 فحص التفاعلات الدوائية</span>
+      </div>
+      <div class="notes-toolbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="intxOpenAdmin()">⚙️ إدارة البيانات</button>
+      </div>
+    </div>
+    <div id="intxCheckerArea" style="max-width:900px;margin:0 auto;padding:0 14px 40px;"></div>
+  </div>
+
+  <!-- ══ COMPARE HEAD-TO-HEAD (DIFFERENTIALS) ══ -->
+  <div id="compareView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;">⚔️ قارن الاثنين (Compare Head-to-Head)</span>
+      </div>
+      <div class="notes-toolbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="cmpOpenAdmin()">⚙️ إدارة البيانات</button>
+      </div>
+    </div>
+    <div id="cmpArea" style="max-width:1000px;margin:0 auto;padding:0 14px 40px;"></div>
+  </div>
+
+  <!-- ══ MICROBIOLOGY INTERACTIVE FLOWCHART TREE ══ -->
+  <div id="microTreeView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="color:var(--text2);font-size:0.85rem;" id="microTreeCount"></span>
+      </div>
+      <div class="notes-toolbar-right">
+        <input class="consultant-search" id="microSearchInput" placeholder="بحث باسم البكتيريا أو التصنيف..." oninput="renderMicroTree()" style="width:220px;padding:9px 14px;" />
+        <button class="btn btn-ghost btn-sm" onclick="microExpandAll()">➕ فرد الكل</button>
+        <button class="btn btn-ghost btn-sm" onclick="microCollapseAll()">➖ طي الكل</button>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <button class="btn btn-ghost btn-sm" onclick="microMapZoom(-0.1)" title="تصغير الخريطة">−</button>
+          <span class="mm-zoom-label" id="microZoomLabel">100%</span>
+          <button class="btn btn-ghost btn-sm" onclick="microMapZoom(0.1)" title="تكبير الخريطة">+</button>
+          <button class="btn btn-ghost btn-sm" onclick="microMapZoomReset()" title="إرجاع العرض الأصلي">⟳</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="microOpenAdmin()">⚙️ إدارة البيانات</button>
+      </div>
+    </div>
+    <div style="max-width:1500px;margin:0 auto;padding:0 14px 40px;">
+      <div id="microTreeArea" class="micro-mm-canvas"></div>
+    </div>
+  </div>
+
+  <!-- ══ GAMIFICATION / REWARDS STORE ══ -->
+  <div id="gamificationView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span class="gam-xp-badge" id="gamBalanceBadge">⭐ 0 XP</span>
+      </div>
+      <div class="notes-toolbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="gamResetBalance()" title="يصفّر رصيدك الحالي فقط — سجل المشتريات يضل محفوظ">🔄 تصفير الرصيد</button>
+        <button class="btn btn-ghost btn-sm" onclick="gamOpenSettings()">⚙️ إعدادات التحفيز والمكافآت</button>
+      </div>
+    </div>
+
+    <div class="gam-section-title">🎁 متجر مكافآتك</div>
+    <div class="gam-rewards-grid" id="gamRewardsGrid"></div>
+
+    <div class="gam-section-title" style="display:flex;align-items:center;justify-content:space-between;max-width:1200px;">
+      <span>📜 سجل المشتريات</span>
+      <button class="btn btn-ghost btn-sm" style="font-size:0.72rem;padding:4px 10px;" onclick="gamClearHistory()">🗑️ حذف السجل</button>
+    </div>
+    <div style="max-width:1200px;margin:0 auto 40px;padding:0 14px;" id="gamHistoryWrap"></div>
+  </div>
+
+  <!-- ══ RED FLAGS CHECKLIST ══ -->
+  <div id="redFlagsView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="font-weight:800;">🚩 Red Flags Checklist</span>
+      </div>
+      <div class="notes-toolbar-right">
+        <button class="btn btn-primary btn-sm" onclick="rfOpenForm()">➕ إضافة عرض جديد</button>
+      </div>
+    </div>
+    <div id="rfListArea" class="gam-rewards-grid" style="max-width:1200px;"></div>
+    <div id="rfFormArea" style="display:none;max-width:640px;margin:0 auto 40px;padding:0 14px;"></div>
+    <div id="rfDetailArea" style="display:none;max-width:640px;margin:0 auto 40px;padding:0 14px;"></div>
+  </div>
+
+  <!-- ══ PERFORMANCE ANALYTICS + CALENDAR ══ -->
+  <div id="analyticsView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="font-weight:800;">📊 الإنجاز والتحليل الشخصي</span>
+      </div>
+      <div class="notes-toolbar-right">
+        <div class="an-tabs">
+          <button class="an-tab active" id="anTabStats" onclick="anSwitchTab('stats')">📊 التحليل</button>
+          <button class="an-tab" id="anTabCal" onclick="anSwitchTab('cal')">📅 التقويم</button>
+        </div>
+      </div>
+    </div>
+    <div id="anStatsPanel"></div>
+    <div id="anCalPanel" style="display:none;"></div>
+  </div>
+
+  <!-- ══ MEDICAL ABBREVIATIONS DICTIONARY ══ -->
+  <div id="abbrevView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="font-weight:800;">🩺 بنك اختصارات الطب السريعة</span>
+      </div>
+      <div class="notes-toolbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="abbrevOpenUpload()">📤 رفع JSON</button>
+        <button class="btn btn-primary btn-sm" onclick="abbrevOpenForm()">➕ إضافة اختصار</button>
+      </div>
+    </div>
+    <div class="abbrev-search-wrap">
+      <input class="abbrev-search-input" id="abbrevSearchInput" placeholder="🔍 دور باختصار... مثلاً SOB, DKA, STEMI" oninput="abbrevRender()" />
+      <select class="abbrev-cat-select" id="abbrevCatChips" onchange="abbrevSetCat(this.value)"></select>
+    </div>
+    <div class="abbrev-grid" id="abbrevGrid"></div>
+  </div>
+
+  <!-- ══ MonicQbank — AI USMLE-style vignette generator ══ -->
+  <div id="monicQbankView">
+    <div class="notes-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="showHome()">← الرجوع</button>
+        <span style="font-weight:800;">🧠 MonicQbank</span>
+      </div>
+      <div class="notes-toolbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="qbankShowHistory()">🗂️ سجل الأسئلة</button>
+      </div>
+    </div>
+
+    <div class="qbank-hero">
+      <h2>🧠 MonicQbank — أسئلة USMLE Step 1 بمنطق البورد الحقيقي</h2>
+      <p>اكتب موضوع محدد أو اتركها فاضية، انسخ البرومبت وحل بالذكاء الاصطناعي اللي بتحب (ChatGPT مثلاً)، وبعدين الصق الـJSON اللي رجعلك ياه هون تحت — بيظهر السؤال مباشرة بنفس التصميم، بدون أي ذكاء اصطناعي جوا الموقع نفسه.</p>
+    </div>
+
+    <div class="qbank-glass-card" id="qbankInputCard">
+      <div class="ecg-field">
+        <label class="ecg-label">📚 موضوع السؤال (اختياري)</label>
+        <input type="text" class="form-input" id="qbankTopicInput" placeholder="مثلاً: Iron deficiency anemia, أو اتركها فاضية لموضوع عشوائي" />
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" onclick="qbankOpenCustomize()">🎛️ خيارات متقدمة</button>
+        <button class="btn btn-primary btn-sm" onclick="qbankCopyPrompt()">📋 نسخ البرومبت</button>
+        <button class="btn btn-amber btn-sm" onclick="qbankOpenChatGPT()">🚀 افتح ChatGPT وأرسل البرومبت</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--text2);margin-top:10px;">1) دوس "نسخ البرومبت" (أو "افتح ChatGPT" وبيترسل تلقائياً) → 2) خذ رد الذكاء الاصطناعي (JSON فقط) → 3) الصقه بالمربع تحت ودوس استيراد.</p>
+    </div>
+
+    <div class="qbank-glass-card" id="qbankImportCard" style="margin-top:14px;">
+      <div class="ecg-field">
+        <label class="ecg-label">📥 الصق الـ JSON اللي رجعه الذكاء الاصطناعي هون</label>
+        <textarea class="form-textarea" id="qbankJsonInput" rows="6" placeholder='{"vignette": "...", "options":[...], "correctLetter":"C", ...}  — أو للاستيراد الجماعي: {"questions":[ {...}, {...} ]}'></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn btn-primary btn-sm" onclick="qbankImportJson()">📥 استيراد وعرض</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('qbankJsonInput').value=''">🗑️ تفريغ</button>
+        <span id="qbankImportStatus" style="font-size:0.78rem;color:var(--text2);"></span>
+      </div>
+    </div>
+
+    <div id="qbankOutputArea" style="margin-top:18px;"></div>
+  </div>
+
+</div>
+
+
+<!-- ══ MonicQbank quick customization popup ══ -->
+<div class="modal-overlay qbank-cust-modal" id="qbankCustomizeModal" onclick="if(event.target===this) qbankCloseCustomize()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🎛️ تخصيص السؤال</h3>
+      <button class="btn btn-ghost btn-sm" onclick="qbankCloseCustomize()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ecg-field">
+        <label class="ecg-label">نوع السؤال</label>
+        <select class="form-input" id="qbankQType">
+          <option value="">تلقائي / عشوائي</option>
+          <option value="Most likely diagnosis">Most likely diagnosis</option>
+          <option value="Mechanism of disease">Mechanism of disease</option>
+          <option value="Pathophysiology">Pathophysiology</option>
+          <option value="Mechanism of action">Mechanism of action</option>
+          <option value="Adverse drug reaction">Adverse drug reaction</option>
+          <option value="Next best diagnostic test">Next best diagnostic test</option>
+          <option value="Next best management step">Next best management step</option>
+          <option value="Treatment">Treatment</option>
+          <option value="Complication">Complication</option>
+          <option value="Laboratory interpretation">Laboratory interpretation</option>
+          <option value="Genetic association">Genetic association</option>
+          <option value="Pharmacologic association">Pharmacologic association</option>
+        </select>
+      </div>
+      <div class="ecg-field" style="margin-top:12px;">
+        <label class="ecg-label">مستوى الصعوبة</label>
+        <div style="display:flex;gap:6px;">
+          <button type="button" class="btn btn-ghost btn-sm qbank-diff-btn" data-v="Moderate">Moderate</button>
+          <button type="button" class="btn btn-ghost btn-sm qbank-diff-btn" data-v="Hard">Hard</button>
+          <button type="button" class="btn btn-ghost btn-sm qbank-diff-btn" data-v="Very Hard">Very Hard</button>
+        </div>
+      </div>
+      <div class="ecg-field" style="margin-top:12px;">
+        <label class="ecg-label">اللغة</label>
+        <p style="font-size:0.78rem;color:var(--text2);">English only (نفس لغة الامتحان الحقيقي)</p>
+      </div>
+      <div class="ecg-field" style="margin-top:12px;">
+        <label class="ecg-label">ملاحظات إضافية (اختياري)</label>
+        <textarea class="form-textarea" id="qbankNotesInput" rows="2" placeholder="مثلاً: ركز على صورة/هستولوجي، أو اجعله عن مريض حامل..."></textarea>
+      </div>
+      <div class="ecg-field" style="margin-top:12px;">
+        <label class="ecg-label">عدد الأسئلة (استيراد جماعي)</label>
+        <input type="number" min="1" max="50" class="form-input" id="qbankCountInput" value="1" />
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="qbankCopyPrompt(true)">📋 نسخ البرومبت بهاي الإعدادات</button>
+        <button class="btn btn-amber btn-sm" style="flex:1;" onclick="qbankOpenChatGPT(true)">🚀 افتح ChatGPT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MonicQbank history drawer ══ -->
+<div class="modal-overlay" id="qbankHistoryModal" onclick="if(event.target===this) qbankCloseHistory()">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <h3>🗂️ سجل أسئلة MonicQbank</h3>
+      <button class="btn btn-ghost btn-sm" onclick="qbankCloseHistory()">✕</button>
+    </div>
+    <div class="modal-body" id="qbankHistoryList" style="max-height:60vh;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- ══ MonicQbank — "🎨 عرض القصة" mnemonic flowchart modal ══ -->
+<div id="qbankStoryModal" class="fixed inset-0 bg-slate-900/60 z-[999] hidden items-center justify-center p-4" onclick="if(event.target===this) qbankCloseStoryModal()">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-5">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🎨</span>
+        <h3 class="text-base font-bold text-slate-800">قصة الحالة بصرياً</h3>
+      </div>
+      <button onclick="qbankCloseStoryModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 font-bold">✕</button>
+    </div>
+    <div id="qbankStoryFlow" class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col items-center gap-3 text-center"></div>
+    <p id="qbankStoryCaption" class="text-xs text-slate-500 text-center"></p>
+  </div>
+</div>
+
+<!-- ════════════ MOTIVATIONAL MODAL 1 (Start) ════════════ -->
+<div class="modal-overlay" id="motModal1">
+  <div class="modal" style="max-width:460px; text-align:center;">
+    <div class="modal-body" style="padding:36px 28px;">
+      <div class="motivational-modal">
+        <div class="quote-icon">🌟</div>
+        <div class="quote-text" id="mot1Text">بسم الله، ابدأ بنية التعلم والعطاء</div>
+        <div class="quote-sub" style="margin-top:8px;">اقرأ بتمعن واستوعب الحالة جيداً</div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:28px; width:100%; justify-content:center; padding:14px;" onclick="startCase()">
+        ابدأ الحالة 🚀
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ MOTIVATIONAL MODAL 2 (End) ════════════ -->
+<div class="modal-overlay" id="motModal2">
+  <div class="modal" style="max-width:460px; text-align:center;">
+    <div class="modal-body" style="padding:36px 28px;">
+      <div class="motivational-modal">
+        <div class="quote-icon">🎊</div>
+        <div class="quote-text" id="mot2Text">أحسنت! أكملت الحالة بنجاح</div>
+        <div class="quote-sub" style="margin-top:8px;">كل خطوة في التعلم تقربك من أن تكون طبيباً أفضل</div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:28px; width:100%; justify-content:center; padding:14px;" onclick="closeModal('motModal2'); showHome();">
+        العودة للقائمة 🏠
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ HISTORY: CASE SUMMARY VIEW (read-only) ════════════ -->
+<div class="modal-overlay" id="hxSummaryModal">
+  <div class="modal hx-summary-modal">
+    <div class="modal-header">
+      <div class="modal-title">📄 خلاصة الحالة</div>
+      <button class="modal-close" onclick="closeModal('hxSummaryModal')">✕</button>
+    </div>
+    <div class="hx-summary-header" id="hxSummaryHeader"></div>
+    <div class="hx-summary-divider"></div>
+    <div class="hx-summary-body" id="hxSummaryBody"></div>
+  </div>
+</div>
+
+<!-- ════════════ CREATE / EDIT CASE MODAL ════════════ -->
+<div class="modal-overlay" id="noteAutoFillModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <div class="modal-title">⚡ تعبئة تلقائية (AI)</div>
+      <button class="modal-close" onclick="closeModal('noteAutoFillModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text2);font-size:0.85rem;margin-bottom:10px;">
+        الصق أي نص فيه بطاقة واحدة أو أكتر (مرقّمين 1) 2) 3)...، أو تحت عناوين ###، أو معلّمة بـ 🚨/💡، أو مفصولين بسطر فاضي) — رح يفصّلهم AI تلقائيًا لبطاقات منفصلة بمحتوى نظيف (بدون عناوين أقسام أو تنسيق زايد)، نسخ حرفي 100% بدون ما يغيّر ولا كلمة أو مصطلح. إذا ما في مفتاح Gemini أو صار خطأ اتصال، بيفصّلهم محلياً بدل ما يفشل.
+      </p>
+      <textarea class="form-textarea" id="noteAutoFillInput" rows="12" placeholder="1) عنوان...&#10;النص هون...&#10;&#10;2) عنوان تاني...&#10;النص هون..."></textarea>
+      <div id="noteAutoFillStatus" style="font-size:0.78rem;color:var(--text2);margin-top:6px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('noteAutoFillModal')">إلغاء</button>
+      <button class="btn btn-primary" id="noteAutoFillRunBtn" onclick="applyNoteAutoFill()">✅ حلّل وفصّل لبطاقات</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="createModal">
+  <div class="modal" style="max-width:760px;">
+    <div class="modal-header">
+      <div class="modal-title" id="createModalTitle">✚ إنشاء حالة جديدة</div>
+      <button class="modal-close" onclick="closeModal('createModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="smart-fill-bar" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="openWriteCase()">🪄 ابني الحالة بالذكاء الاصطناعي</button>
+        <span id="writeCaseStatus" style="font-size:0.78rem;color:var(--text2);"></span>
+      </div>
+      <div class="form-grid">
+
+        <div class="form-divider"></div>
+        <div class="section-title">💬 رسالة البداية</div>
+
+        <div class="form-group">
+          <label class="form-label">💬 رسالة البداية (قبل فتح الحالة)</label>
+          <textarea class="form-textarea" id="f_startMsg" placeholder="اكتب رسالة خاصة بهذه الحالة..."></textarea>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="section-title">👤 بيانات المريض</div>
+
+        <div class="form-group">
+          <label class="form-label">اختر إيموجي المريض</label>
+          <div class="emoji-picker">
+            <div class="emoji-opt selected" data-emoji="👦" onclick="selectEmoji(this)">👦</div>
+            <div class="emoji-opt" data-emoji="👧" onclick="selectEmoji(this)">👧</div>
+            <div class="emoji-opt" data-emoji="👶" onclick="selectEmoji(this)">👶</div>
+            <div class="emoji-opt" data-emoji="🎀" onclick="selectEmoji(this)">🎀</div>
+            <div class="emoji-opt" data-emoji="👴" onclick="selectEmoji(this)">👴</div>
+            <div class="emoji-opt" data-emoji="👵" onclick="selectEmoji(this)">👵</div>
+            <div class="emoji-opt" data-emoji="🧑" onclick="selectEmoji(this)">🧑</div>
+            <div class="emoji-opt" data-emoji="👩" onclick="selectEmoji(this)">👩</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">اسم المريض</label>
+            <input class="form-input" id="f_name" placeholder="مثال: أحمد العلي" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">العمر</label>
+            <input class="form-input" id="f_age" type="text" placeholder="العمر: سنة، شهرين، 6 weeks..." />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">تاريخ الحالة</label>
+          <input class="form-input" id="f_caseDate" type="date" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">التخصص</label>
+            <select class="form-select" id="f_specialty"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">الشكوى الرئيسية</label>
+            <input class="form-input" id="f_complaint" placeholder="Chief Complaint" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">إضافة تخصص جديد للقائمة</label>
+          <div class="custom-specialty-row">
+            <input class="form-input" id="newSpecialtyInput" placeholder="مثال: جلدية، عيون، عظام..." />
+            <button class="btn btn-ghost btn-sm" onclick="addCustomSpecialty()">+ إضافة</button>
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="section-title">📚 الأقسام العلمية</div>
+
+        <div class="form-group">
+          <label class="form-label">🌍 مقدمة علمية سريعة (The Big Picture)</label>
+          <textarea class="form-textarea" id="f_bigpicture" placeholder="نظرة عامة سريعة على المرض أو المفهوم..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📖 السيناريو القصصي (The Scenario)</label>
+          <textarea class="form-textarea" id="f_scenario" placeholder="اكتب القصة والسياق السريري بأسلوب قصصي..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🧬 شرح الحالة: ليش صار هيك؟ (Pathophysiology)</label>
+          <textarea class="form-textarea" id="f_patho" placeholder="الفيزيولوجيا المرضية والآلية..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🎯 التشخيص (Diagnosis)</label>
+          <textarea class="form-textarea" id="f_diagnosis" rows="2" placeholder="Diagnosis shown on the main case card"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔀 الفرق بينها وبين مرض مشابه (Differential)</label>
+          <textarea class="form-textarea" id="f_diffdx" placeholder="مثال:&#10;• عن X: الفرق إنه هون الصدر مو مصاحب بحمى&#10;(كل سطر = نقطة فرق)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🚫 خطأ شائع (Common Mistake)</label>
+          <textarea class="form-textarea" id="f_mistake" placeholder="الخطأ الي غالباً يقع فيه الطلاب بهاي الحالة... (كل سطر = نقطة)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">💊 خطة العلاج (Management)</label>
+          <textarea class="form-textarea" id="f_management" placeholder="خطوات العلاج والإجراءات..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📋 التاريخ المرضي (History Checklist)</label>
+          <textarea class="form-textarea" id="f_history" placeholder="أسئلة التاريخ المرضي المهمة... (كل سطر = نقطة)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🩺 الفحص السريري (Physical Exam)</label>
+          <textarea class="form-textarea" id="f_exam" placeholder="ملاحظات الفحص السريري... (كل سطر = نقطة)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🧪 الفحوصات والأشعة (Labs / Imaging)</label>
+          <textarea class="form-textarea" id="f_labs" placeholder="نتائج المخبر، الأشعة، أو أي فحوصات إضافية... (كل سطر = نقطة)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">⚠️ تريكات لازم تدير بالك منها (Don't Miss!)</label>
+          <textarea class="form-textarea" id="f_dontmiss" placeholder="النقاط المهمة التي لا يجب إغفالها... (كل سطر = نقطة)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">💡 تريكات التشخيص السريع (Tricks)</label>
+          <textarea class="form-textarea" id="f_tricks" placeholder="مثال:&#10;• X + Y + Z = التشخيص&#10;• إذا شفت A فكر في B&#10;• الفرق بين X و Y هو...&#10;(كل سطر = تريكة مستقلة)"></textarea>
+          <div class="magic-hint">حط أي كلمة مهمة بين نجمتين ** هيك ** بأي حقل نصي وراح تظهر ملوّنة وBold بصفحة عرض الحالة.</div>
+        </div>
+
+        <div class="form-divider"></div>
+        <div class="section-title">🏥 أسئلة الجامعة الهاشمية (High-Yield MCQ)</div>
+
+        <div class="form-group">
+          <button type="button" class="btn btn-ghost btn-sm" style="align-self:start;" onclick="toggleMcqBulkArea()">⚡ إدخال تلقائي / Bulk Auto-Fill</button>
+          <div id="mcqBulkArea" style="display:none;margin-top:10px;">
+            <textarea class="form-textarea" id="mcqBulkText" rows="8" placeholder="الصق هون نص الأسئلة والأجوبة بصيغة:&#10;سؤال: ...&#10;&#10;الجواب: ...&#10;&#10;سؤال: ...&#10;&#10;الجواب: ..."></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button type="button" class="btn btn-primary btn-sm" onclick="applyMcqBulkFill()">✅ فرّغ الأسئلة بالبوكسات</button>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="toggleMcqBulkArea()">إلغاء</button>
+            </div>
+            <div class="magic-hint">لازم كل سؤال يبدأ بكلمة "سؤال:" وكل جواب يبدأ بكلمة "الجواب:" — البرنامج بيفصلهم تلقائيًا ويضيفهم كبوكسات جديدة.</div>
+          </div>
+        </div>
+
+        <div id="mcqContainer"></div>
+        <button class="btn btn-ghost btn-sm" onclick="addMCQ()" style="align-self:start;">
+          + إضافة سؤال
+        </button>
+
+        <div class="form-divider"></div>
+        <div class="section-title">🗒️ الخاتمة والمرفقات</div>
+
+        <div class="form-group">
+          <label class="form-label">📝 ملخص الـ Case (The Recap)</label>
+          <textarea class="form-textarea" id="f_recap" placeholder="ملخص سريع للنقاط الرئيسية..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🎉 رسالة النهاية (بعد إنهاء الحالة)</label>
+          <textarea class="form-textarea" id="f_endMsg" placeholder="اكتب رسالة الإنهاء الخاصة بهذه الحالة..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🖼️ الصور (تقدر تضيف أكثر من صورة)</label>
+          <div id="imagesContainer" class="images-list"></div>
+          <input type="file" id="f_imgFile" accept="image/*" multiple style="display:none;" onchange="previewImg(this)" />
+          <button class="btn btn-ghost btn-sm" style="align-self:start;" onclick="addImageField()">
+            + إضافة رابط صورة
+          </button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px; align-self:start;" onclick="document.getElementById('f_imgFile').click()">
+            📎 رفع صور
+          </button>
+          <div class="magic-hint">يمكنك لصق صورة مباشرة هنا بـ Ctrl+V أثناء فتح هذه النافذة.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🗒️ ملاحظات جانبية (Notes)</label>
+          <textarea class="form-textarea" id="f_notes" placeholder="أي ملاحظات إضافية..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🎙️ فويس للحالة</label>
+          <div class="voice-recorder">
+            <div class="voice-actions">
+              <button class="btn btn-danger btn-sm" id="voiceStartBtn" onclick="startVoiceRecording()">● تسجيل</button>
+              <button class="btn btn-ghost btn-sm" id="voiceStopBtn" onclick="stopVoiceRecording()" disabled>■ إيقاف</button>
+              <button class="btn btn-ghost btn-sm" onclick="clearVoiceNotes()">حذف كل الفويسات</button>
+            </div>
+            <div class="voice-status" id="voiceStatus">لا يوجد تسجيل محفوظ لهذه الحالة</div>
+            <div id="voicePreviewList" class="images-list"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('createModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveCase()">💾 حفظ الحالة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Image Lightbox -->
+<div class="img-lightbox" id="imgLightbox" onclick="closeLightbox()">
+  <img id="imgLightboxImg" src="" alt="" />
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- AI Medical Assistant -->
+<button class="ai-assistant-fab" id="aiAssistantFab" type="button" aria-label="افتح مساعد الذكاء الاصطناعي الطبي">
+  <img class="ai-assistant-avatar" src="ai.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+  <span class="ai-assistant-fallback">AI</span>
+</button>
+
+<section class="ai-assistant-panel" id="aiAssistantPanel" aria-label="AI Medical Assistant">
+  <div class="ai-assistant-header">
+    <img class="ai-assistant-avatar" src="ai.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+    <span class="ai-assistant-fallback">AI</span>
+    <div class="ai-assistant-title">
+      <strong>AI Medical Assistant</strong>
+      <span>يدرس معك الحالة المفتوحة ويشرحها خطوة بخطوة</span>
+    </div>
+    <button class="ai-assistant-clear-btn" id="aiAssistantClearBtn" type="button" aria-label="Clear chat">⌫</button>
+    <button class="ai-assistant-settings-btn" id="aiAssistantSettingsBtn" type="button" aria-label="AI settings">⚙</button>
+    <button class="ai-assistant-close" id="aiAssistantClose" type="button" aria-label="إغلاق">×</button>
+  </div>
+  <div class="ai-assistant-messages" id="aiAssistantMessages"></div>
+  <div class="ai-quick-actions" id="aiQuickActions">
+    <button type="button" data-prompt="بسطلي الحالة بأسلوب سهل">💡 بسطلي الحالة بأسلوب سهل</button>
+    <button type="button" data-prompt="اختبرني بسؤال عن هذه الحالة">🎯 اختبرني بسؤال عن هذه الحالة</button>
+    <button type="button" data-prompt="اسألني أي سؤال طبي مناسب لهذه الصفحة">❓ اسأل الـ AI أي سؤال طبي</button>
+  </div>
+  <div class="ai-key-row" id="aiAssistantSettings">
+    <input class="ai-key-input" id="aiAssistantApiKey" type="password" placeholder="Gemini API Key" autocomplete="off" />
+    <button class="ai-key-save" id="aiAssistantSaveKey" type="button">حفظ المفتاح</button>
+  </div>
+  <form class="ai-assistant-form" id="aiAssistantForm">
+    <textarea class="ai-assistant-input" id="aiAssistantInput" rows="1" placeholder="اكتب سؤالك الطبي هنا..."></textarea>
+    <button class="ai-assistant-attach" id="aiAssistantAttachBtn" type="button" aria-label="إرفاق صورة">📎</button>
+    <button class="ai-assistant-screenshot" id="aiAssistantScreenshotBtn" type="button" aria-label="لقطة شاشة">📸</button>
+    <button class="ai-assistant-send" id="aiAssistantSend" type="submit" aria-label="إرسال">➤</button>
+  </form>
+  <div class="ai-attach-status" id="aiAssistantAttachStatus"></div>
+</section>
+
+<!-- Embedded default schema for the History Taking Checklist (can be overridden via Settings import) -->
+
+<!-- hxDefaultSchemaData and hxDefaultSiteImage were extracted to data/hxDefaultSchemaData.json and assets/images/ (see js/script.js: loadHxSchema, hxGetSiteImage) -->
+
+<script src="js/core/bootstrap.js"></script>
+<script src="js/core/state.js"></script>
+<script src="js/core/storage.js"></script>
+<script src="js/core/theme.js"></script>
+<script src="js/core/navigation.js"></script>
+<script src="js/core/backup.js"></script>
+<script src="js/modules/cases.js"></script>
+<script src="js/modules/tricks-review.js"></script>
+<script src="js/modules/mcq-quiz.js"></script>
+<script src="js/modules/lab-values.js"></script>
+<script src="js/modules/ecg.js"></script>
+<script src="js/modules/auscultation.js"></script>
+<script src="js/modules/xray.js"></script>
+<script src="js/modules/pharma.js"></script>
+<script src="js/modules/physical-exam.js"></script>
+<script src="js/modules/history-checklist.js"></script>
+<script src="js/core/init-and-ai.js"></script>
+<script src="js/core/select-bold.js"></script>
+<script src="js/core/utils.js"></script>
+<script src="js/modules/drug-interactions.js"></script>
+<script src="js/modules/compare-differentials.js"></script>
+<script src="js/modules/microbiology.js"></script>
+<script src="js/modules/tts.js"></script>
+<script src="js/modules/abbreviations.js"></script>
+<script src="js/modules/red-flags.js"></script>
+<script src="js/modules/analytics-calendar.js"></script>
+<script src="js/modules/qotd.js"></script>
+<script src="js/modules/pomodoro.js"></script>
+<script src="js/modules/gamification.js"></script>
+<script src="js/modules/onboarding.js"></script>
+<script src="js/modules/qbank.js"></script>
+<script src="js/core/table-convert.js"></script>
+  <!-- ══ POMODORO TIMER (floating widget) ══ -->
+  <!-- Pomodoro FAB moved into the icon dock -->
+  <button id="pomodoroFab" class="pomodoro-fab" onclick="pomodoroTogglePanel()" title="مؤقت بومودورو" style="display:none;">⏱️</button>
+  <div id="pomodoroPanel" class="pomodoro-panel">
+    <div class="pomodoro-header">
+      <span id="pomodoroModeLabel">🎯 وقت تركيز</span>
+      <button class="btn btn-ghost btn-sm" style="padding:2px 8px;" onclick="pomodoroTogglePanel()">✕</button>
+    </div>
+    <div class="pomodoro-time" id="pomodoroTimeDisplay">25:00</div>
+    <div class="pomodoro-controls">
+      <button class="btn btn-primary btn-sm" id="pomodoroStartBtn" onclick="pomodoroStartPause()">▶️ ابدأ</button>
+      <button class="btn btn-ghost btn-sm" onclick="pomodoroReset()">🔄 إعادة</button>
+    </div>
+    <div class="pomodoro-settings">
+      <div class="ecg-field"><label class="ecg-label">دقائق التركيز</label><input type="number" min="1" class="form-input" id="pomodoroWorkMin" value="25" onchange="pomodoroApplySettings()" /></div>
+      <div class="ecg-field"><label class="ecg-label">دقائق الاستراحة</label><input type="number" min="1" class="form-input" id="pomodoroBreakMin" value="5" onchange="pomodoroApplySettings()" /></div>
+    </div>
+  </div>
+
+  <!-- ══ FLOATING ICON DOCK — user can drag icons to reorder ══ -->
+  <!-- ══ First-run onboarding: name / gender / avatar ══ -->
+  <div id="onboardModal" class="modal-overlay">
+    <div class="modal" style="max-width:560px;text-align:center;">
+      <div class="modal-body" style="padding-top:28px;">
+        <div style="font-size:2.4rem;">👋</div>
+        <h3 style="margin:8px 0 4px;">أهلاً فيك بمنصة Dr. Monic!</h3>
+        <p style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">قبل ما نبلش، عرّفنا عن حالك حتى نخاطبك صح</p>
+        <div class="ecg-field" style="text-align:right;">
+          <label class="ecg-label">اسمك</label>
+          <input type="text" id="onboardName" class="form-input" placeholder="مثال: محمد" />
+        </div>
+        <div class="ecg-field" style="text-align:right;margin-top:12px;">
+          <label class="ecg-label">الجنس</label>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <button type="button" class="btn btn-ghost" id="onboardMaleBtn" style="flex:1;font-size:1.1rem;" onclick="onboardSetGender('male')">♂ ذكر</button>
+            <button type="button" class="btn btn-ghost" id="onboardFemaleBtn" style="flex:1;font-size:1.1rem;" onclick="onboardSetGender('female')">♀ أنثى</button>
+          </div>
+        </div>
+        <div class="ecg-field" style="text-align:right;margin-top:12px;">
+          <label class="ecg-label">اختر أفاتار يمثلك</label>
+          <div id="onboardEmojiRow" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;"></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:20px;" onclick="finishOnboarding()">✅ يلا نبلش</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AI writing criteria (custom instructions) ══ -->
+  <div id="aiCriteriaModal" class="modal-overlay" onclick="if(event.target===this) closeAiCriteria()">
+    <div class="modal" style="max-width:440px;">
+      <div class="modal-header">
+        <h3>🎛️ كرايتيريا الذكاء الاصطناعي</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeAiCriteria()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.8rem;color:var(--text2);margin-bottom:8px;">
+          اكتب أي تعليمات بدك الذكاء الاصطناعي يمشي عليها لما يكتب أو يوزّع الحالات (مثلاً: "جاوب بالإنجليزي فقط"، "خلي الأسلوب مختصر وعلمي بدون قصص"، "ركز على الـ MCQ Style"...). اسمك وجنسك بينضافوا تلقائياً حتى الـ AI يعرف يخاطبك صح، ما تحتاج تكتبهم هون. إذا تركت الباقي فاضي، رح يحدد الأسلوب المناسب تلقائياً حسب اسم الحالة والمحتوى.
+        </p>
+        <textarea class="form-textarea" id="aiCriteriaText" rows="6" placeholder="مثال: جاوب بالألمانية دايماً..."></textarea>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="saveAiCriteria()">💾 حفظ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Write a case with AI (compact modal) ══ -->
+  <div id="writeCaseModal" class="modal-overlay" onclick="if(event.target===this) closeWriteCase()">
+    <div class="modal" style="max-width:560px;">
+      <div class="modal-header">
+        <h3>🪄 ابني الحالة بالذكاء الاصطناعي</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeWriteCase()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.8rem;color:var(--text2);margin-bottom:8px;">
+          احكيلنا الحالة بأي ترتيب — تشخيص، تاريخ مرضي، فحص، ملاحظات راوند، أو حتى سطر وحدة زي "حالة حادث سير". الذكاء الاصطناعي رح يبني منها حالة تعليمية كاملة ومنطقية طبياً ويعبي كل الحقول (المقدمة، السيناريو، الفيزيولوجيا المرضية، DDx، الخطأ الشائع، العلاج، التاريخ، الفحص، التحاليل، التريكات، الملخص...) ويختار الأفاتار المناسب.
+        </p>
+        <textarea class="form-textarea" id="writeCaseText" rows="8" placeholder="اكتب/احكي هون تفاصيل الحالة..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+          <button type="button" class="btn btn-primary btn-sm" id="writeCaseRunBtn" onclick="applyWriteCase()">🪄 ابني الحالة وعبّي كل شي</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="openAiCriteria()">🎛️ كرايتيريا</button>
+          <span id="writeCaseStatus2" style="font-size:0.78rem;color:var(--text2);"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="iconDock" class="icon-dock" role="toolbar" aria-label="شريط أدوات سريع"></div>
+
+  <!-- ══ Dock customize panel ══ -->
+  <div id="dockCustomizeModal" class="modal-overlay" onclick="if(event.target===this) closeDockCustomize()">
+    <div class="modal" style="max-width:420px;">
+      <div class="modal-header">
+        <h3>⚙️ تخصيص شريط الأدوات</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeDockCustomize()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="ecg-field">
+          <label class="ecg-label">اختر الأدوات اللي بدك ياها</label>
+          <div id="dockItemsList" style="display:flex;flex-direction:column;gap:6px;margin-top:6px;"></div>
+        </div>
+        <div class="ecg-field" style="margin-top:14px;">
+          <label class="ecg-label">شكل الأزرار</label>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="setDockShape('circle')" id="dockShapeCircleBtn">⚪ دائري</button>
+            <button class="btn btn-ghost btn-sm" onclick="setDockShape('square')" id="dockShapeSquareBtn">▢ مربّع ناعم</button>
+          </div>
+        </div>
+        <div class="ecg-field" style="margin-top:14px;">
+          <label class="ecg-label">الحجم</label>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="setDockSize('sm')" id="dockSizeSmBtn">صغير</button>
+            <button class="btn btn-ghost btn-sm" onclick="setDockSize('md')" id="dockSizeMdBtn">متوسط</button>
+            <button class="btn btn-ghost btn-sm" onclick="setDockSize('lg')" id="dockSizeLgBtn">كبير</button>
+          </div>
+        </div>
+        <div class="ecg-field" style="margin-top:14px;">
+          <label class="ecg-label">الموضع</label>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="setDockSide('end')" id="dockSideEndBtn">يمين</button>
+            <button class="btn btn-ghost btn-sm" onclick="setDockSide('start')" id="dockSideStartBtn">يسار</button>
+          </div>
+        </div>
+        <p style="font-size:0.75rem;color:var(--text2);margin-top:14px;">💡 تقدر كمان تسحب أي أيقونة بالشريط نفسه لإعادة ترتيبها مباشرة.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Quick Round Note Recorder (audio/text) ══ -->
+  <div id="roundNoteModal" class="modal-overlay" onclick="if(event.target===this) closeRoundNoteRecorder()">
+    <div class="modal" style="max-width:440px;">
+      <div class="modal-header">
+        <h3>🎙️ ملاحظة سريعة بالراوند</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeRoundNoteRecorder()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;align-items:center;gap:12px;justify-content:center;padding:10px 0 4px;">
+          <button id="roundNoteRecBtn" class="btn btn-primary" onclick="toggleRoundNoteRecording()" style="border-radius:50%;width:64px;height:64px;font-size:1.4rem;">🎙️</button>
+          <span id="roundNoteTimer" style="font-family:monospace;font-size:1rem;color:var(--text2);">00:00</span>
+        </div>
+        <p id="roundNoteHint" style="text-align:center;font-size:0.78rem;color:var(--text2);margin:4px 0 12px;">اضغط عالمايك عشان تسجل ملاحظة صوتية سريعة</p>
+        <div class="ecg-field">
+          <textarea class="form-textarea" id="roundNoteText" placeholder="أو اكتب ملاحظة نصية سريعة هون..." style="min-height:60px;"></textarea>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px;" onclick="saveRoundTextNote()">💾 حفظ كملاحظة نصية</button>
+        </div>
+        <div id="roundNotesList" style="display:flex;flex-direction:column;gap:8px;margin-top:14px;max-height:260px;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Global: selection → table ══ -->
+  <button id="tableConvertBtn" onclick="openTableConvertModal()">🔀 حوّل لجدول</button>
+  <div class="table-convert-overlay" id="tableConvertOverlay" onclick="if(event.target===this) closeTableConvertModal()">
+    <div class="table-convert-card">
+      <div class="table-convert-topbar">
+        <div class="table-convert-title">📊 جدول منسّق</div>
+        <button class="table-convert-close" onclick="closeTableConvertModal()">✕</button>
+      </div>
+      <div class="table-convert-body">
+        <div class="table-convert-scroll"><table class="table-convert-html" id="tableConvertHtml"></table></div>
+      </div>
+      <div class="table-convert-footer">
+        <button class="btn btn-primary btn-sm" id="tableConvertReplaceBtn" style="display:none;" onclick="applyTableConvertReplace()">↩️ استبدال النص المحدد بالجدول</button>
+        <button class="btn btn-ghost btn-sm" onclick="copyTableConvertMarkdown()">📋 نسخ Markdown</button>
+        <button class="btn btn-ghost btn-sm" onclick="copyTableConvertPlain()">📋 نسخ كنص منظم</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
